@@ -1,5 +1,7 @@
 CC=gcc
 
+RM=rm -rf
+
 TESTS_DIR = ./tests
 
 CFLAGS =	-Wall						\
@@ -16,3 +18,6 @@ test:
 
 run_tests: test
 	@make -C $(TESTS_DIR) run_tests
+
+clean:
+	@make -C $(TESTS_DIR) clean

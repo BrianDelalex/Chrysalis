@@ -1,3 +1,12 @@
+/*******************************************************************\
+**
+**  This file is part of Chrysalis project, and is made available
+**  under the terms of the GNU General Public License version 3.
+**
+**  Copyright (C) 2025 - Brian DELALEX-FONDU
+**
+\*******************************************************************/
+
 # include "tokenizer/token_list.h"
 
 # include <stdlib.h>

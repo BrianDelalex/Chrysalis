@@ -4,12 +4,21 @@ RM=rm -rf
 
 TESTS_DIR = ./tests
 
-CFLAGS =	-Wall						\
-					-Wextra					\
-					-Wpointer-arith	\
-					-Werror
+SOURCE_DIRS =   ./src           \
+                ./src/tokenizer \
+                ./src/files     \
+                ./src/utils     \
+
+SOURCE_FILES = $(wildcard $(addsuffix /*.c, $(SOURCE_DIRS)))
+
+CFLAGS =	-Wall                       \
+			-Wextra                     \
+			-Wpointer-arith	            \
+			-Werror                     \
 
 TARGET=chrysalis
+
+export
 
 all: test
 

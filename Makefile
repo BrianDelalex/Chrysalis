@@ -2,14 +2,18 @@ CC=gcc
 
 RM=rm -rf
 
-TESTS_DIR = ./tests
+PROJECT_ROOT_DIR=$(shell pwd)
 
-SOURCE_DIRS =   ./src           \
-                ./src/tokenizer \
-                ./src/files     \
-                ./src/utils     \
+TESTS_DIR = $(PROJECT_ROOT_DIR)/tests
+
+SOURCE_DIRS =   $(PROJECT_ROOT_DIR)/src           \
+                $(PROJECT_ROOT_DIR)/src/tokenizer \
+                $(PROJECT_ROOT_DIR)/src/files     \
+                $(PROJECT_ROOT_DIR)/src/utils     \
 
 SOURCE_FILES = $(wildcard $(addsuffix /*.c, $(SOURCE_DIRS)))
+
+INCLUDES = -I$(PROJECT_ROOT_DIR)/inc
 
 CFLAGS =	-Wall                       \
 			-Wextra                     \

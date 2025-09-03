@@ -2,9 +2,7 @@ UNITY_ROOT=../Unity
 SRC_DIR=../src
 INC_DIR=../inc
 
-$(info $$SOURCE_FILES = $(SOURCE_FILES))
 TEST1_SOURCE_FILES = $(addprefix ../, $(SOURCE_FILES))
-$(info $$TEST1_SOURCE_FILES = $(TEST1_SOURCE_FILES))
 
 TEST_STAGE1_DIR=stage1
 TARGET_TEST_STAGE1=test_stage1
@@ -14,7 +12,6 @@ SRC_TEST_STAGE1+=$(UNITY_ROOT)/src/unity.c $(TEST_STAGE1_DIR)/test_stage1_runner
 INC_TEST=-I$(INC_DIR) -I$(UNITY_ROOT)/src
 STAGE1_PWD=$(shell pwd)
 STAGE1_CFLAGS=-D'STAGE1_DIR="$(STAGE1_PWD)"'
-$(info $$STAGE1_CFLAGS = $(STAGE1_CFLAGS))
 
 all: clean test
 

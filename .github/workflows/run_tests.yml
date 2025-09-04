@@ -9,6 +9,7 @@ jobs:
   run_test:
     runs-on: ubuntu-latest
     steps:
+      - uses: ilammy/setup-nasm@v1
       - uses: actions/checkout@v4
         with:
           submodules: true

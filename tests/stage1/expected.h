@@ -11,8 +11,68 @@
 #define EXPECTED_H
 
 # include "tokenizer/token_list.h"
+# include "parser/ast_types.h"
 
 # include <stddef.h>
+
+/* expected main_return_0 */
+
+ast_return_statement_t return_statement_main_return_0_expected = {
+    .value = 0
+};
+
+ast_statement_t statement_main_return_0_expected = {
+    .type = RETURN,
+    .statement = (void*) &return_statement_main_return_0_expected};
+
+ast_function_t func_main_return_0_expected = {
+    .statements = &statement_main_return_0_expected,
+    .name = "main"
+};
+
+const ast_program_t prg_main_return_0_expected = {
+    .functions = &func_main_return_0_expected,
+};
+/* End expected main_return_0 */
+
+/* expected main_return_42 */
+
+ast_return_statement_t return_statement_main_return_42_expected = {
+    .value = 42
+};
+
+ast_statement_t statement_main_return_42_expected = {
+    .type = RETURN,
+    .statement = (void*) &return_statement_main_return_42_expected,
+};
+
+ast_function_t func_main_return_42_expected = {
+    .statements = &statement_main_return_42_expected,
+    .name = "main"
+};
+
+const ast_program_t prg_main_return_42_expected = {
+    .functions = &func_main_return_42_expected,
+};
+/* End expected main_return_42 */
+
+/* expected no_main */
+
+ast_statement_t statement_no_main_expected = {
+    .type = RETURN,
+    .statement = (void*) &return_statement_main_return_0_expected,
+
+};
+
+ast_function_t func_no_main_expected = {
+    .statements = &statement_no_main_expected,
+    .name = "func"
+};
+
+const ast_program_t prg_no_main_expected = {
+    .functions = &func_no_main_expected,
+};
+/* End expected no_main */
 
 const token_t main_return_0_expected[] = {
         {

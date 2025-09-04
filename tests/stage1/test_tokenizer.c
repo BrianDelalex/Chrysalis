@@ -16,7 +16,8 @@
 
 # include <stdlib.h>
 
-# define SOURCE_FILES(file) STAGE1_DIR "/stage1/source_files/" file
+# include "stage1.h"
+# include "parser/parser.h"
 
 # define Q(x) #x
 # define QUOTE(x) Q(x)
@@ -29,6 +30,25 @@
     check_token_list(file##_expected, sizeof(file##_expected) / sizeof(token_t), file##_list);  \
     free(file##_list);                                                                          \
     free(file);                                                                                 \
+
+# define TEST_PARSER_WITH_EXPECTED_CONST_STRUCT(test)                                           \
+    token_list_t* head = NULL;                                                                  \
+    for (unsigned int i = 0; i < sizeof(test##_expected) / sizeof(token_t); i++) {              \
+        head = token_list_create_node(head, test##_expected[i].type, test##_expected[i].value); \
+    }                                                                                           \
+    ast_program_t* program = create_ast_struct(head);                                           \
+    TEST_ASSERT_NOT_NULL(program);                                                              \
+    check_ast_struct(prg_##test##_expected, program);                                           \
+    token_list_free(head);                                                                      \
+
+# define TEST_PARSER_FAIL(test)                                                                 \
+    token_list_t* head = NULL;                                                                  \
+    for (unsigned int i = 0; i < sizeof(test##_expected) / sizeof(token_t); i++) {              \
+        head = token_list_create_node(head, test##_expected[i].type, test##_expected[i].value); \
+    }                                                                                           \
+    ast_program_t* program = create_ast_struct(head);                                           \
+    TEST_ASSERT_NULL(program);                                                                  \
+    token_list_free(head);                                                                      \
 
 void setUp(void)
 {
@@ -86,47 +106,100 @@ void test_tokenizer(void)
     TEST_ASSERT_NULL(tokenizer(NULL));
 }
 
-void test_main_return_0(void)
+void test_tokenizer_main_return_0(void)
 {
     TEST_WITH_SOURCE_FILE(main_return_0);
 }
 
-void test_main_return_42(void)
+void test_tokenizer_main_return_42(void)
 {
     TEST_WITH_SOURCE_FILE(main_return_42);
 }
 
-void test_no_main(void)
+void test_tokenizer_no_main(void)
 {
     TEST_WITH_SOURCE_FILE(no_main);
 }
 
-void test_main_extra_spaces(void)
+void test_tokenizer_main_extra_spaces(void)
 {
     TEST_WITH_SOURCE_FILE(main_extra_spaces);
 }
 
-void test_main_missing_closing_parenthesis(void)
+void test_tokenizer_main_missing_closing_parenthesis(void)
 {
     TEST_WITH_SOURCE_FILE(main_missing_closing_parenthesis);
 }
 
-void test_main_missing_opening_parentheses(void)
+void test_tokenizer_main_missing_opening_parentheses(void)
 {
     TEST_WITH_SOURCE_FILE(main_missing_opening_parenthesis);
 }
 
-void test_main_missing_closing_curly_bracket(void)
+void test_tokenizer_main_missing_closing_curly_bracket(void)
 {
     TEST_WITH_SOURCE_FILE(main_missing_closing_curly_bracket);
 }
 
-void test_main_missing_opening_curly_bracket(void)
+void test_tokenizer_main_missing_opening_curly_bracket(void)
 {
     TEST_WITH_SOURCE_FILE(main_missing_opening_curly_bracket);
 }
 
-void test_main_missing_semicolon(void)
+void test_tokenizer_main_missing_semicolon(void)
 {
     TEST_WITH_SOURCE_FILE(main_missing_semicolon);
+}
+
+
+void check_ast_struct(const ast_program_t expected, ast_program_t *program)
+{
+    TEST_ASSERT_NOT_NULL(program->functions);
+    TEST_ASSERT_EQUAL_STRING(expected.functions->name, program->functions->name);
+    TEST_ASSERT_NOT_NULL(program->functions->statements);
+    TEST_ASSERT_EQUAL(expected.functions->statements->type, program->functions->statements->type);
+    TEST_ASSERT_NOT_NULL(program->functions->statements->statement);
+    TEST_ASSERT_EQUAL(
+        ((ast_return_statement_t *)expected.functions->statements->statement)->value,
+        ((ast_return_statement_t*)program->functions->statements->statement)->value);
+}
+
+void test_parser_main_return_0(void)
+{
+    TEST_PARSER_WITH_EXPECTED_CONST_STRUCT(main_return_0);
+}
+
+void test_parser_main_return_42(void)
+{
+    TEST_PARSER_WITH_EXPECTED_CONST_STRUCT(main_return_42);
+}
+
+void test_parser_no_main(void)
+{
+    TEST_PARSER_WITH_EXPECTED_CONST_STRUCT(no_main);
+}
+
+void test_parser_main_missing_closing_parenthesis(void)
+{
+    TEST_PARSER_FAIL(main_missing_closing_parenthesis);
+}
+
+void test_parser_main_missing_opening_parentheses(void)
+{
+    TEST_PARSER_FAIL(main_missing_opening_parenthesis);
+}
+
+void test_parser_main_missing_closing_curly_bracket(void)
+{
+    TEST_PARSER_FAIL(main_missing_closing_curly_bracket);
+}
+
+void test_parser_main_missing_opening_curly_bracket(void)
+{
+    TEST_PARSER_FAIL(main_missing_opening_curly_bracket);
+}
+
+void test_parser_main_missing_semicolon(void)
+{
+    TEST_PARSER_FAIL(main_missing_semicolon);
 }

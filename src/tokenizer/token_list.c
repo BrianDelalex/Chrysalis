@@ -73,3 +73,8 @@ void token_list_dump(token_list_t* head)
         ptr = ptr->next;
     }
 }
+
+const char *token_type_as_str(token_type_t type)
+{
+    return token_type_str[type];
+}

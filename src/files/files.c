@@ -9,6 +9,8 @@
 
 # include "files/files.h"
 
+# include "utils/logging.h"
+
 # include <stdlib.h>
 # include <fcntl.h>
 # include <unistd.h>
@@ -58,4 +60,25 @@ char* read_file(const char* filepath)
 
     close(fd);
     return file;
+}
+
+int write_file(const char* filepath, char** lines)
+{
+    int fd = open(filepath, O_WRONLY | O_CREAT | O_TRUNC, S_IRWXU | S_IRGRP | S_IROTH);
+    if (fd == -1) {
+        PERR("%s\n", strerror(errno));
+        return -1;
+    }
+
+    for (int i = 0; lines[i]; i++) {
+        int rc = write(fd, lines[i], strlen(lines[i]));
+        if (rc == -1) {
+            PERR("%s\n", strerror(errno));
+            close(fd);
+            return -1;
+        }
+    }
+
+    close(fd);
+    return 0;
 }

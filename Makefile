@@ -15,11 +15,12 @@ PROJECT_ROOT_DIR=$(shell pwd)
 
 TESTS_DIR = $(PROJECT_ROOT_DIR)/tests
 
-SOURCE_DIRS =   $(PROJECT_ROOT_DIR)/src           \
-                $(PROJECT_ROOT_DIR)/src/tokenizer \
-                $(PROJECT_ROOT_DIR)/src/files     \
-                $(PROJECT_ROOT_DIR)/src/utils     \
-                $(PROJECT_ROOT_DIR)/src/parser    \
+SOURCE_DIRS =   $(PROJECT_ROOT_DIR)/src             \
+                $(PROJECT_ROOT_DIR)/src/tokenizer   \
+                $(PROJECT_ROOT_DIR)/src/files       \
+                $(PROJECT_ROOT_DIR)/src/utils       \
+                $(PROJECT_ROOT_DIR)/src/parser      \
+                $(PROJECT_ROOT_DIR)/src/generator   \
 
 SOURCE_FILES = $(wildcard $(addsuffix /*.c, $(SOURCE_DIRS)))
 

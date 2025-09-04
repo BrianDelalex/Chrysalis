@@ -14,4 +14,6 @@
 
 # define PERR(fmt, args...) dprintf(2, "%s(l.%d):" fmt, __FUNCTION__, __LINE__, ## args)
 
+# define OUT_OF_MEM "Out of memory!\n"
+
 #endif//!LOGGING_H

@@ -18,6 +18,7 @@
 
 # include "stage1.h"
 # include "parser/parser.h"
+# include "generator/generator.h"
 
 # define Q(x) #x
 # define QUOTE(x) Q(x)
@@ -202,4 +203,19 @@ void test_parser_main_missing_opening_curly_bracket(void)
 void test_parser_main_missing_semicolon(void)
 {
     TEST_PARSER_FAIL(main_missing_semicolon);
+}
+
+void test_generator_main_return_0(void)
+{
+    TEST_ASSERT_EQUAL(0, generator(&prg_main_return_0_expected, OUTPUT_ASM_FILE("/gen_main_return_0.asm")));
+}
+
+void test_generator_main_return_42(void)
+{
+    TEST_ASSERT_EQUAL(0, generator(&prg_main_return_42_expected, OUTPUT_ASM_FILE("/gen_main_return_42.asm")));
+}
+
+void test_generator_no_main(void)
+{
+    TEST_ASSERT_EQUAL(0, generator(&prg_no_main_expected, OUTPUT_ASM_FILE("/gen_no_main.asm")));
 }

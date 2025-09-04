@@ -10,6 +10,8 @@
 #ifndef STAGE1_H
 #define STAGE1_H
 
-# define SOURCE_FILES(file) STAGE1_DIR "/stage1/source_files/" file
+# define SOURCE_FILES(file) STAGE1_DIR "/source_files/" file
+
+# define OUTPUT_ASM_FILE(file) STAGE1_DIR "/output_files/" file
 
 #endif//STAGE1_H

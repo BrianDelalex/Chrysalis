@@ -11,5 +11,6 @@
 #define FILES_H
 
 char* read_file(const char* filepath);
+int write_file(const char* filepath, char** lines);
 
 #endif//!FILES_H

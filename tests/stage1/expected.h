@@ -30,7 +30,7 @@ ast_function_t func_main_return_0_expected = {
     .name = "main"
 };
 
-const ast_program_t prg_main_return_0_expected = {
+ast_program_t prg_main_return_0_expected = {
     .functions = &func_main_return_0_expected,
 };
 /* End expected main_return_0 */
@@ -51,7 +51,7 @@ ast_function_t func_main_return_42_expected = {
     .name = "main"
 };
 
-const ast_program_t prg_main_return_42_expected = {
+ast_program_t prg_main_return_42_expected = {
     .functions = &func_main_return_42_expected,
 };
 /* End expected main_return_42 */
@@ -69,7 +69,7 @@ ast_function_t func_no_main_expected = {
     .name = "func"
 };
 
-const ast_program_t prg_no_main_expected = {
+ast_program_t prg_no_main_expected = {
     .functions = &func_no_main_expected,
 };
 /* End expected no_main */

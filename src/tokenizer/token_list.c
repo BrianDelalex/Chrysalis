@@ -20,7 +20,8 @@ const char* token_type_str[] = {
     "PARENTHESES_OPEN",
     "PARENTHESES_CLOSE",
     "IDENTIFIER",
-    "INTERGER_LITERAL",
+    "INTEGER_LITERAL",
+    "EQUAL",
     "UNKNOW",
 };
 
@@ -72,6 +73,11 @@ void token_list_dump(token_list_t* head)
         printf("    type: %s, value: %s\n", token_type_str[ptr->token.type], ptr->token.value ? ptr->token.value : "NULL");
         ptr = ptr->next;
     }
+}
+
+void token_dump(token_list_t head)
+{
+    printf("type: %s, value: %s\n", token_type_str[head.token.type], head.token.value ? head.token.value : "N/A");
 }
 
 const char *token_type_as_str(token_type_t type)

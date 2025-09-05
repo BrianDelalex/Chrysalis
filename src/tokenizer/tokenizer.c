@@ -114,7 +114,7 @@ static token_list_t* get_integer_literal_node(char* file, int* file_index)
         return NULL;
     }
     node->next = NULL;
-    node->token.type = INTERGER_LITERAL;
+    node->token.type = INTEGER_LITERAL;
     node->token.value = word;
 
     return node;
@@ -133,6 +133,8 @@ static token_type_t get_delimiter_type(char c)
         return PARENTHESES_CLOSE;
     case ';':
         return SEMICOLON;
+    case '=':
+        return EQUAL;
     default:
         return UNKNOW;
     }

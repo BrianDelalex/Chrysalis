@@ -71,22 +71,30 @@ char** append_line(char** lines, const char* line)
 
 char** generate_statement(char** lines, ast_statement_t* statement)
 {
-    ast_return_statement_t *rtn_statement = (ast_return_statement_t*) statement->statement;
+    ast_statement_return_t *rtn_statement = (ast_statement_return_t*) statement->statement;
     char* line;
 
-    int line_size = snprintf(NULL, 0, RETURN_INT_STATEMENT, rtn_statement->value);
-    line = malloc(sizeof(char) * (line_size + 1));
-    if (!line) {
-        PERR(OUT_OF_MEM);
-        return NULL;
-    }
+    if (rtn_statement->expr.op.type == OP_IDENTIFIER) {
+        //TODO
+        PERR("TODO");
+        return lines;
+    } else {
+        int value = ((ast_operand_integer_integral_t*)rtn_statement->expr.op.operand)->value;
+        int line_size = snprintf(NULL, 0, RETURN_INT_STATEMENT, value);
+        line = malloc(sizeof(char) * (line_size + 1));
+        if (!line) {
+            PERR(OUT_OF_MEM);
+            return NULL;
+        }
 
-    if (snprintf(line, line_size + 1, RETURN_INT_STATEMENT, rtn_statement->value) < 0) {
-        PERR("%s", strerror(errno));
-        return NULL;
+        if (snprintf(line, line_size + 1, RETURN_INT_STATEMENT, value) < 0) {
+            PERR("%s", strerror(errno));
+            return NULL;
+        }
     }
     lines = append_line(lines, line);
     CHECK_LINES_RETURN_NULL();
+
     return lines;
 }
 

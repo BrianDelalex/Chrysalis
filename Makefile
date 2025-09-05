@@ -20,6 +20,8 @@ SOURCE_DIRS =   $(PROJECT_ROOT_DIR)/src             \
                 $(PROJECT_ROOT_DIR)/src/files       \
                 $(PROJECT_ROOT_DIR)/src/utils       \
                 $(PROJECT_ROOT_DIR)/src/parser      \
+                $(PROJECT_ROOT_DIR)/src/parser/function \
+                $(PROJECT_ROOT_DIR)/src/parser/statement    \
                 $(PROJECT_ROOT_DIR)/src/generator   \
 
 SOURCE_FILES = $(wildcard $(addsuffix /*.c, $(SOURCE_DIRS)))

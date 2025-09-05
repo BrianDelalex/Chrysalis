@@ -160,9 +160,10 @@ void check_ast_struct(const ast_program_t expected, ast_program_t *program)
     TEST_ASSERT_NOT_NULL(program->functions->statements);
     TEST_ASSERT_EQUAL(expected.functions->statements->type, program->functions->statements->type);
     TEST_ASSERT_NOT_NULL(program->functions->statements->statement);
+
     TEST_ASSERT_EQUAL(
-        ((ast_return_statement_t *)expected.functions->statements->statement)->value,
-        ((ast_return_statement_t*)program->functions->statements->statement)->value);
+        ((ast_operand_integer_integral_t*)((ast_statement_return_t *)expected.functions->statements->statement)->expr.op.operand)->value,
+        ((ast_operand_integer_integral_t*)((ast_statement_return_t*)program->functions->statements->statement)->expr.op.operand)->value);
 }
 
 void test_parser_main_return_0(void)

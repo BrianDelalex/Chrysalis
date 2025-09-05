@@ -20,6 +20,14 @@
 # include <stdbool.h>
 # include <errno.h>
 
+# define CHECK_LINES_RETURN_NULL()  \
+    if (!lines)                     \
+        return NULL;                \
+
+# define CHECK_LINES_RETURN(ret_val)    \
+    if (!lines)                         \
+        return ret_val;                 \
+
 bool g_main_found = false;
 
 int count_lines(char** lines)
@@ -78,6 +86,7 @@ char** generate_statement(char** lines, ast_statement_t* statement)
         return NULL;
     }
     lines = append_line(lines, line);
+    CHECK_LINES_RETURN_NULL();
     return lines;
 }
 
@@ -92,11 +101,17 @@ char** generate_start_function(char** lines)
     const char syscall[] = "    syscall\n";
 
     lines = append_line(lines, global_start);
+    CHECK_LINES_RETURN_NULL();
     lines = append_line(lines, start_lbl);
+    CHECK_LINES_RETURN_NULL();
     lines = append_line(lines, call_main);
+    CHECK_LINES_RETURN_NULL();
     lines = append_line(lines, mov_rdi_rax);
+    CHECK_LINES_RETURN_NULL();
     lines = append_line(lines, mov_rax_exit);
+    CHECK_LINES_RETURN_NULL();
     lines = append_line(lines, syscall);
+    CHECK_LINES_RETURN_NULL();
 
     return lines;
 }
@@ -124,6 +139,7 @@ char** generate_function(char** lines, ast_function_t* func)
     }
 
     lines = append_line(lines, global_lbl);
+    CHECK_LINES_RETURN_NULL();
     free(global_lbl);
 
     lbl = malloc(sizeof(char) * lbl_size);
@@ -138,6 +154,7 @@ char** generate_function(char** lines, ast_function_t* func)
     }
 
     lines = append_line(lines, lbl);
+    CHECK_LINES_RETURN_NULL();
     free(lbl);
 
     return generate_statement(lines, func->statements);
@@ -150,9 +167,12 @@ int generator(ast_program_t* program, const char* target)
     g_main_found = false;
 
     lines = generate_function(lines, program->functions);
+    CHECK_LINES_RETURN(-1);
 
-    if (g_main_found)
+    if (g_main_found) {
         lines = generate_start_function(lines);
+        CHECK_LINES_RETURN(-1);
+    }
 
     write_file(target, lines);
     free_lines(lines);

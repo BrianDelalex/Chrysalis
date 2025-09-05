@@ -38,9 +38,9 @@ export
 all: test
 
 test:
-	@make -C $(TESTS_DIR) test
+	@make -C $(TESTS_DIR) tests
 
-run_tests: test
+run_tests:
 	@make -C $(TESTS_DIR) run_tests
 
 clean:

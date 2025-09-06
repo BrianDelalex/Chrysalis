@@ -11,6 +11,8 @@ CC=gcc
 
 RM=rm -rf
 
+BINARY=chrysalis
+
 PROJECT_ROOT_DIR=$(shell pwd)
 
 TESTS_DIR = $(PROJECT_ROOT_DIR)/tests
@@ -38,7 +40,10 @@ TARGET=chrysalis
 
 export
 
-all: test
+all: $(BINARY) test
+
+$(BINARY):
+	@$(CC) $(CFLAGS) $(INCLUDES) $(SOURCE_FILES) -o $(BINARY)
 
 test:
 	@make -C $(TESTS_DIR) tests
@@ -47,4 +52,6 @@ run_tests:
 	@make -C $(TESTS_DIR) run_tests
 
 clean:
+	@$(RM) $(BINARY)
+	@echo "Removing $(BINARY)."
 	@make -C $(TESTS_DIR) clean

@@ -14,6 +14,7 @@
 # include "utils/logging.h"
 
 # include <stdlib.h>
+# include <string.h>
 
 ast_function_t* get_function_ast(token_list_t* head)
 {
@@ -53,7 +54,13 @@ void* get_function_decl_ast(token_list_t* head)
         PERR(OUT_OF_MEM);
         return NULL;
     }
-    func->name = ptr->token.value;
+    int name_len = strlen(ptr->token.value);
+    func->name = malloc(sizeof(char) * (name_len + 1));
+    if (!func->name) {
+        free(func);
+        return NULL;
+    }
+    func->name = memcpy(func->name, ptr->token.value, name_len + 1);
     func->statements = NULL;
     ptr = ptr->next;
     if (!ptr || ptr->token.type != PARENTHESES_OPEN) {
@@ -83,14 +90,14 @@ void* get_function_decl_ast(token_list_t* head)
         }
         func->statements = ast_statement_list_add_node(func->statements, statement);
         if (!func->statements) {
-            free(func);
+            ast_function_free(func);
             return NULL;
         }
     }
 
     if (!ptr || ptr->token.type != CURLY_CLOSE) {
         PERR("Expected '}' after 'return'.\n");
-        free(func);
+        ast_function_free(func);
         return NULL;
     }
     return func;

@@ -8,8 +8,8 @@
 \*******************************************************************/
 
 # include "parser/ast_types.h"
-
 # include "parser/patterns.h"
+# include "parser/statement/statement_free.h"
 
 # include "utils/logging.h"
 
@@ -41,6 +41,8 @@ ast_statement_return_t* get_ast_statement_return(token_list_t* head)
         PERR(OUT_OF_MEM);
         return NULL;
     }
+    memset(rtn_statement, 0, sizeof(ast_statement_return_t));
+    rtn_statement->free = &statement_return_free;
 
 
     switch (head->token.type) {
@@ -102,9 +104,12 @@ void* get_statement_ret(token_list_t* head)
     statement = malloc(sizeof(ast_statement_t));
     if (!statement) {
         PERR(OUT_OF_MEM);
+        rtn_statement->free(rtn_statement);
         return NULL;
     }
+    memset(statement, 0, sizeof(ast_statement_t));
     statement->type = RETURN;
     statement->statement = rtn_statement;
+    statement->free_statement = &statement_free;
     return statement;
 }

@@ -40,11 +40,13 @@ typedef enum {
 
 typedef struct ast_statement_return_s {
     ast_expr_t expr;
+    void (*free)(struct ast_statement_return_s *);
 }ast_statement_return_t;
 
 typedef struct ast_statement_s {
     ast_statement_type_t type;
     void* statement;
+    void (*free_statement)(struct ast_statement_s *);
     struct ast_statement_s *next;
 }ast_statement_t;
 
@@ -58,7 +60,11 @@ typedef struct ast_program_s {
 }ast_program_t;
 
 ast_statement_t* ast_statement_list_add_node(ast_statement_t* head, ast_statement_t* node);
+void ast_statement_list_free(ast_statement_t* head);
 
+void ast_function_free(ast_function_t* func);
+
+void ast_program_free(ast_program_t* prg);
 
 ast_function_t* get_function_ast(token_list_t* head);
 ast_statement_t* get_statement_ast(token_list_t** head);

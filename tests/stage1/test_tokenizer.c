@@ -40,6 +40,7 @@
     ast_program_t* program = create_ast_struct(head);                                           \
     TEST_ASSERT_NOT_NULL(program);                                                              \
     check_ast_struct(prg_##test##_expected, program);                                           \
+    ast_program_free(program);                                                                  \
     token_list_free(head);                                                                      \
 
 # define TEST_PARSER_FAIL(test)                                                                 \

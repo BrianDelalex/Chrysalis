@@ -32,6 +32,7 @@ CFLAGS =	-Wall                       \
 			-Wextra                     \
 			-Wpointer-arith	            \
 			-Werror                     \
+			-g3
 
 TARGET=chrysalis
 

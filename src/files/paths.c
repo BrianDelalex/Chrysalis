@@ -11,6 +11,8 @@
 # include <stdlib.h>
 # include <string.h>
 
+# include "files/paths.h"
+
 # include "utils/logging.h"
 
 char *get_absolute_path(char* filepath)

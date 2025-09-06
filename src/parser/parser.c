@@ -16,7 +16,7 @@
 # include <stdlib.h>
 # include <string.h>
 
-void dump_ast(ast_program_t* program)
+static void dump_ast(ast_program_t* program)
 {
     printf("<program> ::= <function>\n");
     printf("<function> ::= \"int\" <%s> \"(\" \")\" \"{\" <statement> \"}\"\n", program->functions->name);

@@ -12,6 +12,8 @@
 # include <stdbool.h>
 # include <string.h>
 
+# include "utils/string_manipulation.h"
+
 char* remove_extra_spaces(char* str)
 {
     int str_len = strlen(str);

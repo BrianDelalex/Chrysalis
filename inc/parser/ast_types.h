@@ -59,13 +59,15 @@ typedef struct ast_program_s {
     struct ast_function_s* functions;
 }ast_program_t;
 
+/* ast statement list functions */
 ast_statement_t* ast_statement_list_add_node(ast_statement_t* head, ast_statement_t* node);
 void ast_statement_list_free(ast_statement_t* head);
 
+/* ast structs free functions */
 void ast_function_free(ast_function_t* func);
-
 void ast_program_free(ast_program_t* prg);
 
+/* ast struct creation function */
 ast_function_t* get_function_ast(token_list_t* head);
 ast_statement_t* get_statement_ast(token_list_t** head);
 

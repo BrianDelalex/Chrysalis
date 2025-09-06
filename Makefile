@@ -17,33 +17,35 @@ PROJECT_ROOT_DIR=$(shell pwd)
 
 TESTS_DIR = $(PROJECT_ROOT_DIR)/tests
 
-SOURCE_DIRS =   $(PROJECT_ROOT_DIR)/src             \
-                $(PROJECT_ROOT_DIR)/src/tokenizer   \
-                $(PROJECT_ROOT_DIR)/src/files       \
-                $(PROJECT_ROOT_DIR)/src/utils       \
-                $(PROJECT_ROOT_DIR)/src/parser      \
-                $(PROJECT_ROOT_DIR)/src/parser/function \
-                $(PROJECT_ROOT_DIR)/src/parser/statement    \
-                $(PROJECT_ROOT_DIR)/src/generator   \
+SOURCE_DIRS =	$(PROJECT_ROOT_DIR)/src/tokenizer   \
+				$(PROJECT_ROOT_DIR)/src/files       \
+				$(PROJECT_ROOT_DIR)/src/utils       \
+				$(PROJECT_ROOT_DIR)/src/parser      \
+				$(PROJECT_ROOT_DIR)/src/parser/function \
+				$(PROJECT_ROOT_DIR)/src/parser/statement    \
+				$(PROJECT_ROOT_DIR)/src/generator   \
 
 SOURCE_FILES = $(wildcard $(addsuffix /*.c, $(SOURCE_DIRS)))
 
 INCLUDES = -I$(PROJECT_ROOT_DIR)/inc
 
-CFLAGS =	-Wall                       \
-			-Wextra                     \
-			-Wpointer-arith	            \
-			-Werror                     \
+CFLAGS =	-Wall						\
+			-Wextra						\
+			-Wpointer-arith				\
+			-Werror						\
 			-g3
 
 TARGET=chrysalis
 
 export
 
-all: $(BINARY) test
+MAIN_SOURCE_FILES+=$(PROJECT_ROOT_DIR)/src/chrysalis.c
+
+all: $(BINARY)
 
 $(BINARY):
-	@$(CC) $(CFLAGS) $(INCLUDES) $(SOURCE_FILES) -o $(BINARY)
+	@echo "CC $(BINARY)"
+	@$(CC) $(CFLAGS) $(INCLUDES) $(MAIN_SOURCE_FILES) $(SOURCE_FILES) -o $(BINARY)
 
 test:
 	@make -C $(TESTS_DIR) tests

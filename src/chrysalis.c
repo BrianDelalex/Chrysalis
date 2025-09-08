@@ -97,8 +97,8 @@ int main(int ac, char** av)
     }
 
     ast_program_t *ast = create_ast_struct(tokens);
+    token_list_free(tokens);
     if (!ast) {
-        free(tokens);
         return -1;
     }
 
@@ -106,6 +106,7 @@ int main(int ac, char** av)
 
     free(options.output_filepath);
     free(options.input_filepath);
+    ast_program_free(ast);
 
     return rc;
 }

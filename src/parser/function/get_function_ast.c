@@ -51,35 +51,33 @@ void* create_function_decl_ast(token_list_t* head)
         }
         return NULL;
     }
-    func = malloc(sizeof(ast_function_t));
+    func = ast_function_init();
     if (!func) {
-        PERR(OUT_OF_MEM);
         return NULL;
     }
     int name_len = strlen(ptr->token.value);
     func->name = malloc(sizeof(char) * (name_len + 1));
     if (!func->name) {
-        free(func);
+        func->free(func);
         return NULL;
     }
     func->name = memcpy(func->name, ptr->token.value, name_len + 1);
-    func->statements = NULL;
     ptr = ptr->next;
     if (!ptr || ptr->token.type != PARENTHESES_OPEN) {
         PERR("Expected '(' after %s identifier. Found %s\n", func->name, token_type_as_str(ptr->token.type));
-        free(func);
+        func->free(func);
         return NULL;
     }
     ptr = ptr->next;
     if (!ptr || ptr->token.type != PARENTHESES_CLOSE) {
         PERR("Expected ')' after '%s('.\n", func->name);
-        free(func);
+        func->free(func);
         return NULL;
     }
     ptr = ptr->next;
     if (!ptr || ptr->token.type != CURLY_OPEN) {
         PERR("Expected '{' after '%s()'.\n", func->name);
-        free(func);
+        func->free(func);
         return NULL;
     }
     ptr = ptr->next;
@@ -87,19 +85,19 @@ void* create_function_decl_ast(token_list_t* head)
     while (ptr && ptr->token.type != CURLY_CLOSE) {
         ast_statement_t* statement = get_statement_ast(&ptr);
         if (!statement) {
-            free(func);
+            func->free(func);
             return NULL;
         }
         func->statements = ast_statement_list_add_node(func->statements, statement);
         if (!func->statements) {
-            ast_function_free(func);
+            func->free(func);
             return NULL;
         }
     }
 
     if (!ptr || ptr->token.type != CURLY_CLOSE) {
         PERR("Expected '}' after 'return'.\n");
-        ast_function_free(func);
+        func->free(func);
         return NULL;
     }
     return func;

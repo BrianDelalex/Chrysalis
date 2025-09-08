@@ -14,6 +14,7 @@
 
 void ast_program_free(ast_program_t* prg)
 {
-    ast_function_free(prg->functions);
+    if (prg->functions)
+        prg->functions->free(prg->functions);
     free(prg);
 }

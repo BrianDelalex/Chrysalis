@@ -35,11 +35,11 @@ ast_program_t* create_ast_struct(token_list_t* tokens)
     ast_program_t *program = malloc(sizeof(ast_program_t));
     if (!program)
         return NULL;
-
+    memset(program, 0, sizeof(ast_program_t));
 
     ast_function_t *func = get_function_ast(tokens);
     if (!func) {
-        free(program);
+        ast_program_free(program);
         return NULL;
     }
     program->functions = func;

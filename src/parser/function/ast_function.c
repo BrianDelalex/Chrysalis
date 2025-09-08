@@ -9,7 +9,22 @@
 
 # include "parser/ast_types.h"
 
+# include "utils/logging.h"
+
 # include <stdlib.h>
+
+ast_function_t* ast_function_init(void)
+{
+    ast_function_t* func = malloc(sizeof(ast_function_t));
+    if (!func) {
+        PERR(OUT_OF_MEM);
+        return NULL;
+    }
+    func->name = NULL;
+    func->statements = NULL;
+    func->free = &ast_function_free;
+    return func;
+}
 
 void ast_function_free(ast_function_t* func)
 {

@@ -15,6 +15,7 @@
 const int FUNC_DECL_NO_ARG_TOKENS[] = {KEYWORD, IDENTIFIER, PARENTHESES_OPEN, PARENTHESES_CLOSE, CURLY_OPEN};
 const pattern_t FUNC_DECL_NO_ARG = {
     .tokens = FUNC_DECL_NO_ARG_TOKENS,
+    .token_count = GET_TOKEN_COUNT(FUNC_DECL_NO_ARG_TOKENS),
     .type = FUNCTION_DECL,
     .ast_create = &create_function_decl_ast,
 };

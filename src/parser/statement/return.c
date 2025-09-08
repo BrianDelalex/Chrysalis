@@ -52,7 +52,9 @@ static ast_statement_return_t* create_ast_statement_return(token_list_t* head)
             PERR(OUT_OF_MEM);
             return NULL;
         }
-        op->identifier = head->token.value;
+        int value_len = strlen(head->token.value);
+        op->identifier = malloc(sizeof(char) * (value_len + 1));
+        memcpy(op->identifier, head->token.value, (value_len + 1));
         rtn_statement->expr.op.type = OP_IDENTIFIER;
         rtn_statement->expr.op.operand = (void*)op;
         return rtn_statement;

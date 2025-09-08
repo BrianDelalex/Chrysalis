@@ -210,6 +210,8 @@ static char* sanitize_file(char* file)
 
 token_list_t* tokenizer(char* file)
 {
+    token_list_t* tokens;
+
     if (!file)
         return NULL;
     char* clean_file = sanitize_file(file);
@@ -217,5 +219,9 @@ token_list_t* tokenizer(char* file)
     if (!clean_file)
         return NULL;
 
-    return file_to_token_list(clean_file);
+    tokens = file_to_token_list(clean_file);
+
+    free(clean_file);
+
+    return tokens;
 }

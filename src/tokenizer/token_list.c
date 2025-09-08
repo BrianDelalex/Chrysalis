@@ -59,6 +59,8 @@ void token_list_free(token_list_t* head)
 
     while (head) {
         head = head->next;
+        if (ptr->token.value != NULL)
+            free(ptr->token.value);
         free(ptr);
         ptr = head;
     }

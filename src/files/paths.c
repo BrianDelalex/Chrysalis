@@ -43,6 +43,7 @@ char *get_absolute_path(const char* filepath)
         memcpy(absolute, pwd, pwd_len);
         absolute[pwd_len] = '/';
         memcpy(&(absolute[pwd_len + 1]), filepath, filepath_len + 1);
+        free(pwd);
     }
     return absolute;
 }

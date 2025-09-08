@@ -94,6 +94,7 @@ static char** generate_statement(char** lines, ast_statement_t* statement)
     }
     lines = append_line(lines, line);
     CHECK_LINES_RETURN_NULL();
+    free(line);
 
     return lines;
 }

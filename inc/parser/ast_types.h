@@ -51,17 +51,22 @@ typedef struct ast_statement_s {
 }ast_statement_t;
 
 typedef struct ast_function_s {
-    struct ast_statement_s* statements;
     char* name;
+    void (*free)(struct ast_function_s*);
+    struct ast_statement_s* statements;
 }ast_function_t;
 
 typedef struct ast_program_s {
     struct ast_function_s* functions;
 }ast_program_t;
 
+
 /* ast statement list functions */
 ast_statement_t* ast_statement_list_add_node(ast_statement_t* head, ast_statement_t* node);
 void ast_statement_list_free(ast_statement_t* head);
+
+/* ast structs init functions */
+ast_function_t* ast_function_init(void);
 
 /* ast structs free functions */
 void ast_function_free(ast_function_t* func);
@@ -70,5 +75,8 @@ void ast_program_free(ast_program_t* prg);
 /* ast struct creation function */
 ast_function_t* get_function_ast(token_list_t* head);
 ast_statement_t* get_statement_ast(token_list_t** head);
+
+/* ast struct initialization macro */
+# define INIT_AST_FUNCTION(func) func = {.statement = NULL, .name = NULL, .free = &ast_function_free}
 
 #endif//!AST_TYPES_H

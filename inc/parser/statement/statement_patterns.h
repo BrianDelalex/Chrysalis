@@ -17,40 +17,17 @@
 
 void* get_statement_ret(token_list_t* head);
 
-void *not_implemented(token_list_t *)
-{
-    printf("NOT IMPLEMENTED!\n");
-    return NULL;
-}
 
-const int STATEMENT_RET_EXPR_TOKENS[] = {TOKEN_RETURN, TOKEN_EXPR, SEMICOLON};
-const pattern_t STATEMENT_RET_EXPR = {
-    .tokens = STATEMENT_RET_EXPR_TOKENS,
-    .token_count = GET_TOKEN_COUNT(STATEMENT_RET_EXPR_TOKENS),
-    .type = STATEMENT,
-    .ast_gen = &get_statement_ret
-};
+extern const int STATEMENT_RET_EXPR_TOKENS[];
+extern const pattern_t STATEMENT_RET_EXPR;
 
-const int STATEMENT_VAR_DECL_TOKENS[] = {KEYWORD, IDENTIFIER, SEMICOLON};
-const pattern_t STATEMENT_VAR_DECL = {
-    .tokens = STATEMENT_VAR_DECL_TOKENS,
-    .token_count = GET_TOKEN_COUNT(STATEMENT_VAR_DECL_TOKENS),
-    .type = STATEMENT,
-    .ast_gen = &not_implemented
-};
+extern const int STATEMENT_VAR_DECL_TOKENS[];
+extern const pattern_t STATEMENT_VAR_DECL;
 
-const int STATEMENT_VAR_DECL_ASSIGN_TOKENS[] = {KEYWORD, IDENTIFIER, EQUAL, TOKEN_EXPR, SEMICOLON};
-const pattern_t STATEMENT_VAR_DECL_ASSIGN = {
-    .tokens = STATEMENT_VAR_DECL_ASSIGN_TOKENS,
-    .token_count = GET_TOKEN_COUNT(STATEMENT_VAR_DECL_ASSIGN_TOKENS),
-    .type = STATEMENT,
-    .ast_gen = not_implemented,
-};
+extern const int STATEMENT_VAR_DECL_ASSIGN_TOKENS[];
+extern const pattern_t STATEMENT_VAR_DECL_ASSIGN;
 
-const pattern_t STATEMENT_PATTERNS[] = {
-    STATEMENT_RET_EXPR,
-    STATEMENT_VAR_DECL,
-    STATEMENT_VAR_DECL_ASSIGN,
-};
+extern const pattern_t STATEMENT_PATTERNS[];
+extern const unsigned int STATEMENT_PATTERNS_SIZE;
 
 #endif//!STATEMENT_PATTERNS_H

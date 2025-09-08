@@ -26,7 +26,7 @@ ast_statement_t* get_statement_ast(token_list_t** head)
         token_dump(*head_save);
         return NULL;
     }
-    return pattern->ast_gen(head_save);
+    return pattern->ast_create(head_save);
 }
 
 ast_statement_return_t* get_ast_statement_return(token_list_t* head)
@@ -81,13 +81,13 @@ void* get_statement_ret(token_list_t* head)
     ast_statement_t* statement;
     ast_statement_return_t* rtn_statement;
 
-    if (!head || head->token.type != KEYWORD || strcmp(head->token.value, "return") != 0) { \
-        PERR("Expected 'return' keyword instead found:");                                   \
-        if (head)                                                                           \
-            token_dump(*head);                                                              \
-        else                                                                                \
-            PERR("END OF FILE \n");                                                         \
-        return NULL;                                                                        \
+    if (!head || head->token.type != KEYWORD || strcmp(head->token.value, "return") != 0) {
+        PERR("Expected 'return' keyword instead found:");
+        if (head)
+            token_dump(*head);
+        else
+            PERR("END OF FILE \n");
+        return NULL;
     }
     head = head->next;
 

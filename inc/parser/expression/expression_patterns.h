@@ -12,27 +12,13 @@
 
 # include "parser/patterns.h"
 
-# include <stddef.h>
+extern const int EXPR_INTEGER_LITERAL_TOKENS[];
+extern const pattern_t EXPR_INTEGER_LITERAL;
 
-const int EXPR_INTEGER_LITERAL_TOKENS[] = {INTEGER_LITERAL};
-const pattern_t EXPR_INTEGER_LITERAL = {
-    .tokens = EXPR_INTEGER_LITERAL_TOKENS,
-    .token_count = GET_TOKEN_COUNT(EXPR_INTEGER_LITERAL_TOKENS),
-    .type = EXPR,
-    .ast_gen = NULL
-};
+extern const int EXPR_IDENTIFIER_TOKENS[];
+extern const pattern_t EXPR_IDENTIFIER;
 
-const int EXPR_IDENTIFIER_TOKENS[] = {IDENTIFIER};
-const pattern_t EXPR_IDENTIFIER = {
-    .tokens = EXPR_IDENTIFIER_TOKENS,
-    .token_count = GET_TOKEN_COUNT(EXPR_IDENTIFIER_TOKENS),
-    .type = EXPR,
-    .ast_gen = NULL
-};
-
-const pattern_t EXPRESSION_PATTERNS[] = {
-    EXPR_INTEGER_LITERAL,
-    EXPR_IDENTIFIER
-};
+extern const pattern_t EXPRESSION_PATTERNS[];
+extern const unsigned int EXPRESSION_PATTERNS_SIZE;
 
 #endif//!EXPRESSION_PATTERNS_H

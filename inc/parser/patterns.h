@@ -21,6 +21,8 @@ typedef enum {
 
 # define GET_TOKEN_COUNT(tokens) sizeof(tokens) / sizeof(int)
 
+typedef void*(*ast_struct_create_fptr)(token_list_t*);
+
 typedef enum {
     FUNCTION_DECL,
     STATEMENT,
@@ -31,7 +33,7 @@ typedef struct pattern_s {
     const int *tokens;
     int token_count;
     PATTERN_TYPE type;
-    void *(*ast_gen)(token_list_t *);
+    ast_struct_create_fptr ast_create;
 }pattern_t;
 
 const pattern_t* find_function_pattern(token_list_t* head);

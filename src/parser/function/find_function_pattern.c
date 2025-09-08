@@ -28,7 +28,7 @@ static bool does_pattern_macth(token_list_t *head, const pattern_t* pattern) {
 
 const pattern_t* find_function_pattern(token_list_t* head)
 {
-    for (size_t i = 0; i < sizeof(FUNCTION_PATTERNS) / sizeof(pattern_t); i++) {
+    for (unsigned int i = 0; i < FUNCTION_PATTERNS_SIZE; i++) {
         if (does_pattern_macth(head, &FUNCTION_PATTERNS[i]))
             return &FUNCTION_PATTERNS[i];
     }

@@ -7,15 +7,11 @@
 **
 \*******************************************************************/
 
-#ifndef FUNCTION_PATTERNS_H
-#define FUNCTION_PATTERNS_H
+#ifndef AST_CREATE_FUNCTIONS_H
+#define AST_CREATE_FUNCTIONS_H
 
-# include "parser/patterns.h"
+# include "tokenizer/token_list.h"
 
-extern const int FUNC_DECL_NO_ARG_TOKENS[];
-extern const pattern_t FUNC_DECL_NO_ARG;
+void* create_function_decl_ast(token_list_t* head);
 
-extern const pattern_t FUNCTION_PATTERNS[];
-extern const unsigned int FUNCTION_PATTERNS_SIZE;
-
-#endif//!FUNCTION_PATTERNS_H
+#endif//!AST_CREATE_FUNCTIONS_H

@@ -36,7 +36,7 @@ static bool does_expression_pattern_macth(token_list_t **head, const pattern_t* 
 
 bool is_expression_valid(token_list_t **head)
 {
-    for (size_t i = 0; i < sizeof(EXPRESSION_PATTERNS) / sizeof(pattern_t); i++) {
+    for (unsigned int i = 0; i < EXPRESSION_PATTERNS_SIZE; i++) {
         if (does_expression_pattern_macth(head, &EXPRESSION_PATTERNS[i]))
             return true;
     }
@@ -89,7 +89,7 @@ static bool does_statement_pattern_macth(token_list_t **head, const pattern_t* p
 
 const pattern_t* find_statement_pattern(token_list_t** head)
 {
-    for (size_t i = 0; i < sizeof(STATEMENT_PATTERNS) / sizeof(pattern_t); i++) {
+    for (unsigned int i = 0; i < STATEMENT_PATTERNS_SIZE; i++) {
         if (does_statement_pattern_macth(head, &STATEMENT_PATTERNS[i]))
             return &STATEMENT_PATTERNS[i];
     }

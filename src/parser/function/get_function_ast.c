@@ -11,6 +11,8 @@
 
 # include "parser/patterns.h"
 
+# include "parser/function/ast_create_functions.h"
+
 # include "utils/logging.h"
 
 # include <stdlib.h>
@@ -25,10 +27,10 @@ ast_function_t* get_function_ast(token_list_t* head)
         token_dump(*head);
         return NULL;
     }
-    return pattern->ast_gen(head);
+    return pattern->ast_create(head);
 }
 
-void* get_function_decl_ast(token_list_t* head)
+void* create_function_decl_ast(token_list_t* head)
 {
     ast_function_t *func;
     token_list_t* ptr = head;

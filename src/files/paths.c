@@ -15,7 +15,7 @@
 
 # include "utils/logging.h"
 
-char *get_absolute_path(char* filepath)
+char *get_absolute_path(const char* filepath)
 {
     char *absolute;
 

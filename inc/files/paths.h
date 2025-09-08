@@ -10,6 +10,6 @@
 #ifndef PATHS_H
 #define PATHS_H
 
-char *get_absolute_path(char* filepath);
+char *get_absolute_path(const char* filepath);
 
 #endif//!PATHS_H

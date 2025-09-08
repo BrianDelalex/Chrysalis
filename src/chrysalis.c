@@ -9,10 +9,9 @@
 
 # include <stdlib.h>
 # include <unistd.h>
+# include <stdio.h>
 
 # include "chrysalis.h"
-
-# include "utils/logging.h"
 
 # include "files/files.h"
 # include "files/paths.h"
@@ -21,6 +20,7 @@
 # include "parser/parser.h"
 # include "generator/generator.h"
 
+const char default_output_filename[] = "chrysalis.out";
 
 static void print_help()
 {
@@ -72,6 +72,12 @@ static program_options_t parse_args(int ac, char** av)
     options.input_filepath = get_absolute_path(av[i]);
     if (!options.input_filepath)
         exit(1);
+    if (!options.output_filepath) {
+        options.output_filepath = get_absolute_path(default_output_filename);
+        if (!options.output_filepath)
+            exit(1);
+    }
+
     return options;
 }
 
@@ -79,10 +85,27 @@ static program_options_t parse_args(int ac, char** av)
 int main(int ac, char** av)
 {
     program_options_t options = parse_args(ac, av);
-    if (options.output_filepath) {
-        printf("output path: %s\n", options.output_filepath);
+
+    char *input = read_file(options.input_filepath);
+    if (!input)
+        return -1;
+
+    token_list_t *tokens = tokenizer(input);
+    free(input);
+    if (!tokens) {
+        return -1;
     }
-    if (options.input_filepath) {
-        printf("input path: %s\n", options.input_filepath);
+
+    ast_program_t *ast = create_ast_struct(tokens);
+    if (!ast) {
+        free(tokens);
+        return -1;
     }
+
+    int rc = generator(ast, options.output_filepath);
+
+    free(options.output_filepath);
+    free(options.input_filepath);
+
+    return rc;
 }

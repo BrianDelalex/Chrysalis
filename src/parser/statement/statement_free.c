@@ -7,6 +7,7 @@
 **
 \*******************************************************************/
 
+# include "parser/statement/statement_free.h"
 # include "parser/ast_types.h"
 
 # include "utils/logging.h"

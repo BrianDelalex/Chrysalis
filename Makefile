@@ -30,11 +30,18 @@ SOURCE_FILES = $(wildcard $(addsuffix /*.c, $(SOURCE_DIRS)))
 
 INCLUDES = -I$(PROJECT_ROOT_DIR)/inc
 
-CFLAGS =	-Wall						\
+ifeq ($(DEBUG),y)
+	DEBCFLAGS = -g3 -Og
+else
+	DEBCFLAGS = -O2
+endif
+
+CFLAGS += $(DEBCFLAGS)
+CFLAGS +=	-Wall						\
 			-Wextra						\
 			-Wpointer-arith				\
 			-Werror						\
-			-g3
+			-Wmissing-prototypes
 
 TARGET=chrysalis
 
@@ -45,7 +52,7 @@ MAIN_SOURCE_FILES+=$(PROJECT_ROOT_DIR)/src/chrysalis.c
 all: $(BINARY)
 
 $(BINARY):
-	@echo "CC $(BINARY)"
+	@echo "CC $(DEBCFLAGS) $(BINARY)"
 	@$(CC) $(CFLAGS) $(INCLUDES) $(MAIN_SOURCE_FILES) $(SOURCE_FILES) -o $(BINARY)
 
 test:

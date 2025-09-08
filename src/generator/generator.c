@@ -30,7 +30,7 @@
 
 bool g_main_found = false;
 
-int count_lines(char** lines)
+static int count_lines(char** lines)
 {
     int count = 0;
 
@@ -38,7 +38,7 @@ int count_lines(char** lines)
     return count;
 }
 
-void free_lines(char **lines)
+static void free_lines(char **lines)
 {
     for (int i = 0; lines[i]; i++) {
         free(lines[i]);
@@ -46,7 +46,7 @@ void free_lines(char **lines)
     free(lines);
 }
 
-char** append_line(char** lines, const char* line)
+static char** append_line(char** lines, const char* line)
 {
     char *new_line;
     int lines_count = count_lines(lines);
@@ -69,7 +69,7 @@ char** append_line(char** lines, const char* line)
     return lines;
 }
 
-char** generate_statement(char** lines, ast_statement_t* statement)
+static char** generate_statement(char** lines, ast_statement_t* statement)
 {
     ast_statement_return_t *rtn_statement = (ast_statement_return_t*) statement->statement;
     char* line;
@@ -98,7 +98,7 @@ char** generate_statement(char** lines, ast_statement_t* statement)
     return lines;
 }
 
-char** generate_start_function(char** lines)
+static char** generate_start_function(char** lines)
 {
     printf("generate_start_function\n");
     const char global_start[] = "global _start\n\n";
@@ -124,7 +124,7 @@ char** generate_start_function(char** lines)
     return lines;
 }
 
-char** generate_function(char** lines, ast_function_t* func)
+static char** generate_function(char** lines, ast_function_t* func)
 {
     int global_lbl_size = GLOBAL_LABEL_STR_SIZE(func->name);
     int lbl_size = LABEL_STR_SIZE(func->name);

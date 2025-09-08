@@ -7,6 +7,7 @@
 **
 \*******************************************************************/
 
+# include "parser/parser.h"
 # include "parser/ast_types.h"
 
 # include "tokenizer/token_list.h"

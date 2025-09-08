@@ -12,7 +12,7 @@
 # include <stddef.h>
 # include <stdio.h>
 
-void* get_statement_ret(token_list_t* head);
+void* create_statement_return_ast(token_list_t* head);
 
 static void *not_implemented(token_list_t *)
 {
@@ -25,7 +25,7 @@ const pattern_t STATEMENT_RET_EXPR = {
     .tokens = STATEMENT_RET_EXPR_TOKENS,
     .token_count = GET_TOKEN_COUNT(STATEMENT_RET_EXPR_TOKENS),
     .type = STATEMENT,
-    .ast_create = &get_statement_ret
+    .ast_create = &create_statement_return_ast
 };
 
 const int STATEMENT_VAR_DECL_TOKENS[] = {KEYWORD, IDENTIFIER, SEMICOLON};

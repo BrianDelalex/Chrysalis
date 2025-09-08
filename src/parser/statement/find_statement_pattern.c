@@ -34,7 +34,7 @@ static bool does_expression_pattern_macth(token_list_t **head, const pattern_t* 
     return true;
 }
 
-bool is_expression_valid(token_list_t **head)
+static bool is_expression_valid(token_list_t **head)
 {
     for (unsigned int i = 0; i < EXPRESSION_PATTERNS_SIZE; i++) {
         if (does_expression_pattern_macth(head, &EXPRESSION_PATTERNS[i]))
@@ -43,12 +43,12 @@ bool is_expression_valid(token_list_t **head)
     return false;
 }
 
-bool is_token_return(token_list_t token)
+static bool is_token_return(token_list_t token)
 {
     return token.token.type == KEYWORD && strcmp(token.token.value, "return") == 0;
 }
 
-bool check_extended_token_type(token_list_t **ptr, token_type_ext_t type)
+static bool check_extended_token_type(token_list_t **ptr, token_type_ext_t type)
 {
     switch (type) {
         case TOKEN_EXPR:

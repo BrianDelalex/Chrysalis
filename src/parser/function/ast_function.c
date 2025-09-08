@@ -8,6 +8,7 @@
 \*******************************************************************/
 
 # include "parser/ast_types.h"
+# include "parser/stack.h"
 
 # include "utils/logging.h"
 
@@ -23,6 +24,7 @@ ast_function_t* ast_function_init(void)
     func->name = NULL;
     func->statements = NULL;
     func->free = &ast_function_free;
+    func->stack = NULL;
     return func;
 }
 
@@ -32,5 +34,7 @@ void ast_function_free(ast_function_t* func)
         ast_statement_list_free(func->statements);
     if (func->name)
         free(func->name);
+    if (func->stack)
+        ast_stack_free(func->stack);
     free(func);
 }

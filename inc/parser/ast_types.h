@@ -10,6 +10,8 @@
 #ifndef AST_TYPES_H
 #define AST_TYPES_H
 
+# include <stdint.h>
+
 # include "tokenizer/token_list.h"
 
 typedef enum {
@@ -50,10 +52,22 @@ typedef struct ast_statement_s {
     struct ast_statement_s *next;
 }ast_statement_t;
 
+typedef struct ast_stack_entry_s {
+    uint64_t offset;
+    uint64_t size;
+    char* identifier;
+    struct ast_stack_entry_s* next;
+}ast_stack_entry_t;
+
+typedef struct ast_stack_s {
+    ast_stack_entry_t* entries;
+}ast_stack_t;
+
 typedef struct ast_function_s {
     char* name;
     void (*free)(struct ast_function_s*);
-    struct ast_statement_s* statements;
+    ast_statement_t* statements;
+    ast_stack_t* stack;
 }ast_function_t;
 
 typedef struct ast_program_s {

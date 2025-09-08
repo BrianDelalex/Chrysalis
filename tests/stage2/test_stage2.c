@@ -4,6 +4,7 @@
 
 # include "tokenizer/tokenizer.h"
 # include "parser/parser.h"
+# include "parser/stack.h"
 
 # include "files/files.h"
 
@@ -23,8 +24,39 @@ void test_tokenize_main_return_identifier(void)
     ast_program_free(prg);
 }
 
-void test_stage2(void);
-void test_stage2(void)
+void test_ast_stack(void);
+void test_ast_stack(void)
 {
-    TEST_ASSERT_NULL(NULL);
+    ast_stack_t* stack = ast_stack_create();
+    ast_stack_entry_t* ptr;
+    const char var1[] = "var1";
+    const char var2[] = "var2";
+    const char var3[] = "var3";
+    TEST_ASSERT_NOT_NULL(stack);
+
+    TEST_ASSERT_EQUAL(0, ast_stack_add_entry(stack, sizeof(int), var1));
+    TEST_ASSERT_NOT_NULL(stack->entries);
+    TEST_ASSERT_EQUAL(0, stack->entries->offset);
+    TEST_ASSERT_EQUAL(sizeof(int), stack->entries->size);
+    TEST_ASSERT_EQUAL_STRING(var1, stack->entries->identifier);
+    TEST_ASSERT_NULL(stack->entries->next);
+    ptr = stack->entries;
+
+    TEST_ASSERT_EQUAL(0, ast_stack_add_entry(stack, sizeof(uint64_t), var2));
+    ptr = ptr->next;
+    TEST_ASSERT_NOT_NULL(ptr);
+    TEST_ASSERT_EQUAL(sizeof(int), ptr->offset);
+    TEST_ASSERT_EQUAL(sizeof(uint64_t), ptr->size);
+    TEST_ASSERT_EQUAL_STRING(var2, ptr->identifier);
+    TEST_ASSERT_NULL(ptr->next);
+
+    TEST_ASSERT_EQUAL(0, ast_stack_add_entry(stack, sizeof(char), var3));
+    ptr = ptr->next;
+    TEST_ASSERT_NOT_NULL(ptr);
+    TEST_ASSERT_EQUAL(sizeof(int) + sizeof(uint64_t), ptr->offset);
+    TEST_ASSERT_EQUAL(sizeof(char), ptr->size);
+    TEST_ASSERT_EQUAL_STRING(var3, ptr->identifier);
+    TEST_ASSERT_NULL(ptr->next);
+
+    ast_stack_free(stack);
 }

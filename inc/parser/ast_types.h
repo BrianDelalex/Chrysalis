@@ -14,6 +14,8 @@
 
 # include "tokenizer/token_list.h"
 
+# include "parser/types/types.h"
+
 typedef enum {
     OP_IDENTIFIER,
     OP_INTEGER_LITERAL
@@ -36,9 +38,20 @@ typedef struct ast_expr_s {
     ast_expr_operand_t op;
 }ast_expr_t;
 
+typedef struct ast_variable_s {
+    char* identifier;
+    type_t type;
+}ast_variable_t;
+
 typedef enum {
     RETURN,
+    ASSIGN,
 }ast_statement_type_t;
+
+typedef struct ast_statement_assign_s {
+    ast_variable_t var;
+    ast_expr_t expr;
+}ast_statement_assign_t;
 
 typedef struct ast_statement_return_s {
     ast_expr_t expr;

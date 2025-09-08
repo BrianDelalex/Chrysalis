@@ -13,6 +13,7 @@
 # include <string.h>
 
 # include "utils/string_manipulation.h"
+# include "utils/logging.h"
 
 char* remove_extra_spaces(char* str)
 {
@@ -68,4 +69,18 @@ char* remove_newline(char* str)
     }
     new_str[j] = 0;
     return new_str;
+}
+
+char* copy_string(const char* str)
+{
+    char* copy;
+    int str_len = strlen(str);
+
+    copy = malloc(sizeof(char) * (str_len + 1));
+    if (!copy) {
+        PERR(OUT_OF_MEM);
+        return NULL;
+    }
+    memcpy(copy, str, str_len + 1);
+    return copy;
 }

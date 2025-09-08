@@ -21,12 +21,19 @@ static void dump_ast(ast_program_t* program)
 {
     printf("<program> ::= <function>\n");
     printf("<function> ::= \"int\" <%s> \"(\" \")\" \"{\" <statement> \"}\"\n", program->functions->name);
-    printf("<statement> ::= \"return\" <exp> \";\"\n");
-    ast_statement_return_t* statement = (ast_statement_return_t*)program->functions->statements->statement;
-    if (statement->expr.op.type == OP_IDENTIFIER) {
-        printf("<exp> ::= %s\n", ((ast_operand_identifier_t*)statement->expr.op.operand)->identifier);
-    } else {
-        printf("<exp> ::= %d\n", ((ast_operand_integer_integral_t *)statement->expr.op.operand)->value);
+    if (program->functions->statements->type == RETURN) {
+        printf("<statement> ::= \"return\" <exp> \";\"\n");
+        ast_statement_return_t* statement = (ast_statement_return_t*)program->functions->statements->statement;
+        if (statement->expr.op.type == OP_IDENTIFIER) {
+            printf("<exp> ::= %s\n", ((ast_operand_identifier_t*)statement->expr.op.operand)->identifier);
+        } else {
+            printf("<exp> ::= %d\n", ((ast_operand_integer_integral_t *)statement->expr.op.operand)->value);
+        }
+    } else if (program->functions->statements->type == ASSIGN) {
+        ast_statement_assign_t* statement = (ast_statement_assign_t*)program->functions->statements->statement;
+        printf("<statement> ::= \"assign\" <var> <exp> \";\"\n");
+        printf("<var> ::= %s \"=\" <expr>\n", statement->var.identifier);
+        printf("<expr> ::= %d\n", ((ast_operand_integer_integral_t*)statement->expr.op.operand)->value);
     }
 }
 

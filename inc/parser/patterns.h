@@ -16,7 +16,8 @@
 
 typedef enum {
     TOKEN_EXPR = EXTENDED_TOKEN_TYPES_START,
-    TOKEN_RETURN
+    TOKEN_RETURN,
+    TOKEN_TYPE
 }token_type_ext_t;
 
 # define GET_TOKEN_COUNT(tokens) sizeof(tokens) / sizeof(int)

@@ -13,5 +13,6 @@
 # include "tokenizer/token_list.h"
 
 void* create_statement_return_ast(token_list_t* head);
+void* create_statement_assigment_decl_ast(token_list_t* head);
 
 #endif//!AST_CREATE_STATEMENT_H

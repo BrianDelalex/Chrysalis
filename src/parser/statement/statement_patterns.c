@@ -9,10 +9,11 @@
 
 # include "parser/patterns.h"
 
+# include "parser/statement/ast_create_statement.h"
+
 # include <stddef.h>
 # include <stdio.h>
 
-void* create_statement_return_ast(token_list_t* head);
 
 static void *not_implemented(token_list_t *)
 {
@@ -27,8 +28,7 @@ const pattern_t STATEMENT_RET_EXPR = {
     .type = STATEMENT,
     .ast_create = &create_statement_return_ast
 };
-
-const int STATEMENT_VAR_DECL_TOKENS[] = {KEYWORD, IDENTIFIER, SEMICOLON};
+const int STATEMENT_VAR_DECL_TOKENS[] = {TOKEN_TYPE, IDENTIFIER, SEMICOLON};
 const pattern_t STATEMENT_VAR_DECL = {
     .tokens = STATEMENT_VAR_DECL_TOKENS,
     .token_count = GET_TOKEN_COUNT(STATEMENT_VAR_DECL_TOKENS),
@@ -36,12 +36,12 @@ const pattern_t STATEMENT_VAR_DECL = {
     .ast_create = &not_implemented
 };
 
-const int STATEMENT_VAR_DECL_ASSIGN_TOKENS[] = {KEYWORD, IDENTIFIER, EQUAL, TOKEN_EXPR, SEMICOLON};
+const int STATEMENT_VAR_DECL_ASSIGN_TOKENS[] = {TOKEN_TYPE, IDENTIFIER, EQUAL, TOKEN_EXPR, SEMICOLON};
 const pattern_t STATEMENT_VAR_DECL_ASSIGN = {
     .tokens = STATEMENT_VAR_DECL_ASSIGN_TOKENS,
     .token_count = GET_TOKEN_COUNT(STATEMENT_VAR_DECL_ASSIGN_TOKENS),
     .type = STATEMENT,
-    .ast_create = not_implemented,
+    .ast_create = &create_statement_assigment_decl_ast
 };
 
 const pattern_t STATEMENT_PATTERNS[] = {

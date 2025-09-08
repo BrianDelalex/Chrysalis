@@ -7,11 +7,14 @@
 **
 \*******************************************************************/
 
-#ifndef STRING_MANIPULATION_H
-# define STRING_MANIPULATION_H
+#ifndef GENERATOR_STACK_H
+#define GENERATOR_STACK_H
 
-char* remove_extra_spaces(char* str);
-char* remove_newline(char* str);
-char* copy_string(const char* str);
+struct ast_stack_s;
+typedef struct ast_stack_s ast_stack_t;
 
-#endif//!STRING_MANIPULATION_H
+# define ACCESS_STACK_FMT "%s -%ld[rbp]"
+
+char *asm_string_access_stack(ast_stack_t* stack, const char* identifier);
+
+#endif//!GENERATOR_STACK_H

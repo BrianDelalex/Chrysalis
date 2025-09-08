@@ -13,6 +13,7 @@
 # include "utils/logging.h"
 
 # include <stdlib.h>
+# include <string.h>
 
 ast_function_t* ast_function_init(void)
 {
@@ -21,10 +22,18 @@ ast_function_t* ast_function_init(void)
         PERR(OUT_OF_MEM);
         return NULL;
     }
+
     func->name = NULL;
     func->statements = NULL;
     func->free = &ast_function_free;
-    func->stack = NULL;
+
+    func->stack = malloc(sizeof(ast_stack_t));
+    if (!func->stack) {
+        PERR(OUT_OF_MEM);
+        return NULL;
+    }
+    memset(func->stack, 0, sizeof(ast_stack_t));
+
     return func;
 }
 

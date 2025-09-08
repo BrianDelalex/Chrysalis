@@ -10,6 +10,8 @@
 # include "parser/statement/statement_patterns.h"
 # include "parser/expression/expression_patterns.h"
 
+# include "parser/types/types.h"
+
 # include "utils/logging.h"
 
 # include <stdbool.h>
@@ -48,6 +50,18 @@ static bool is_token_return(token_list_t token)
     return token.token.type == KEYWORD && strcmp(token.token.value, "return") == 0;
 }
 
+static bool is_valid_type(token_list_t** head)
+{
+    token_list_t* ptr = *head;
+    for (unsigned int i = 0; i < BUILTIN_TYPE_IDENTIFIERS_SIZE; i++) {
+        if (ptr->token.type == KEYWORD && strcmp(ptr->token.value, BUILTIN_TYPE_IDENTIFIERS[i]) == 0) {
+            *head = ptr->next;
+            return true;
+        }
+    }
+    return false;
+}
+
 static bool check_extended_token_type(token_list_t **ptr, token_type_ext_t type)
 {
     switch (type) {
@@ -58,6 +72,8 @@ static bool check_extended_token_type(token_list_t **ptr, token_type_ext_t type)
             if (ret)
                 *ptr = (*ptr)->next;
             return ret;
+        case TOKEN_TYPE:
+            return is_valid_type(ptr);
         default:
             PERR("Unknow extended token type %d\n", type);
             return false;

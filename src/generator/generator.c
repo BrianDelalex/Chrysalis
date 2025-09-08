@@ -20,17 +20,9 @@
 # include <stdbool.h>
 # include <errno.h>
 
-# define CHECK_LINES_RETURN_NULL()  \
-    if (!lines)                     \
-        return NULL;                \
-
-# define CHECK_LINES_RETURN(ret_val)    \
-    if (!lines)                         \
-        return ret_val;                 \
-
 bool g_main_found = false;
 
-static int count_lines(char** lines)
+int count_lines(char** lines)
 {
     int count = 0;
 
@@ -38,7 +30,7 @@ static int count_lines(char** lines)
     return count;
 }
 
-static void free_lines(char **lines)
+void free_lines(char **lines)
 {
     for (int i = 0; lines[i]; i++) {
         free(lines[i]);
@@ -46,7 +38,7 @@ static void free_lines(char **lines)
     free(lines);
 }
 
-static char** append_line(char** lines, const char* line)
+char** append_line(char** lines, const char* line)
 {
     char *new_line;
     int lines_count = count_lines(lines);
@@ -69,35 +61,7 @@ static char** append_line(char** lines, const char* line)
     return lines;
 }
 
-static char** generate_statement(char** lines, ast_statement_t* statement)
-{
-    ast_statement_return_t *rtn_statement = (ast_statement_return_t*) statement->statement;
-    char* line;
 
-    if (rtn_statement->expr.op.type == OP_IDENTIFIER) {
-        //TODO
-        PERR("TODO");
-        return lines;
-    } else {
-        int value = ((ast_operand_integer_integral_t*)rtn_statement->expr.op.operand)->value;
-        int line_size = snprintf(NULL, 0, RETURN_INT_STATEMENT, value);
-        line = malloc(sizeof(char) * (line_size + 1));
-        if (!line) {
-            PERR(OUT_OF_MEM);
-            return NULL;
-        }
-
-        if (snprintf(line, line_size + 1, RETURN_INT_STATEMENT, value) < 0) {
-            PERR("%s", strerror(errno));
-            return NULL;
-        }
-    }
-    lines = append_line(lines, line);
-    CHECK_LINES_RETURN_NULL();
-    free(line);
-
-    return lines;
-}
 
 static char** generate_start_function(char** lines)
 {
@@ -166,7 +130,7 @@ static char** generate_function(char** lines, ast_function_t* func)
     CHECK_LINES_RETURN_NULL();
     free(lbl);
 
-    return generate_statement(lines, func->statements);
+    return generate_statement(lines, func->statements, func->stack);
 }
 
 int generator(ast_program_t* program, const char* target)

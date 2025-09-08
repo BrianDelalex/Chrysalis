@@ -1,4 +1,5 @@
 int main()
 {
-    return test;
+    int var = 0;
+    return var;
 }

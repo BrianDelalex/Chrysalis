@@ -5,6 +5,7 @@
 # include "tokenizer/tokenizer.h"
 # include "parser/parser.h"
 # include "parser/stack.h"
+# include "generator/generator.h"
 
 # include "files/files.h"
 
@@ -14,11 +15,27 @@ void test_tokenize_main_return_identifier(void);
 void test_tokenize_main_return_identifier(void)
 {
     char* file = read_file(SOURCE_FILES("main_return_identifier.c"));
+    TEST_ASSERT_NOT_NULL_MESSAGE(file, "file was null");
+    token_list_t* tokens = tokenizer(file);
+    TEST_ASSERT_NOT_NULL_MESSAGE(tokens, "tokens was null.");
+    ast_program_t* prg = create_ast_struct(tokens);
+    TEST_ASSERT_NOT_NULL_MESSAGE(prg, "prg was null.");
+    TEST_ASSERT_EQUAL(0, generator(prg, OUTPUT_ASM_FILE("main_return_identifier.asm")));
+    free(file);
+    token_list_free(tokens);
+    ast_program_free(prg);
+}
+
+void test_tokenize_main_return_undef_identifier(void);
+void test_tokenize_main_return_undef_identifier(void)
+{
+    char* file = read_file(SOURCE_FILES("main_return_undef_identifier.c"));
     TEST_ASSERT_NOT_NULL(file);
     token_list_t* tokens = tokenizer(file);
     TEST_ASSERT_NOT_NULL(tokens);
     ast_program_t* prg = create_ast_struct(tokens);
     TEST_ASSERT_NOT_NULL(prg);
+    TEST_ASSERT_EQUAL(-1, generator(prg, OUTPUT_ASM_FILE("main_return_undef_identifier.asm")));
     free(file);
     token_list_free(tokens);
     ast_program_free(prg);

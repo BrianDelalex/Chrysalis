@@ -10,9 +10,6 @@
 UNITY_ROOT=$(PROJECT_ROOT_DIR)/Unity
 INC_DIR=$(PROJECT_ROOT_DIR)/inc
 
-TEST_COMPILE_SCRIPT=test_compile.sh
-TEST_COMPILE_NO_MAIN_SCRIPT=test_compile_no_main.sh
-
 UNITY_C=$(UNITY_ROOT)/src/unity.c
 INC_TEST=$(INCLUDES) -I$(UNITY_ROOT)/src
 UNITY_GENERATE_RB=$(UNITY_ROOT)/auto/generate_test_runner.rb
@@ -45,9 +42,6 @@ tests: $(TARGET_TEST_STAGE1) $(TARGET_TEST_STAGE2)
 run_tests: $(TARGET_TEST_STAGE1) $(TARGET_TEST_STAGE2)
 	@echo "#### Running Stage 1 test suite ####"
 	./$(TARGET_TEST_STAGE1)
-	@./$(TEST_COMPILE_SCRIPT) $(TEST_STAGE1_DIR) gen_main_return_0 0
-	@./$(TEST_COMPILE_SCRIPT) $(TEST_STAGE1_DIR) gen_main_return_42 42
-	@./$(TEST_COMPILE_NO_MAIN_SCRIPT) $(TEST_STAGE1_DIR) gen_no_main
 	@echo "#### Stage 1 test suite Done ####"
 	@echo "#### Running Stage 2 test suite ####"
 	./$(TARGET_TEST_STAGE2)

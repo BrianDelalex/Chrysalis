@@ -11,18 +11,23 @@ else
     VALGRIND=
 fi
 
+mkdir -p "${TEST_STAGE1_DIR}/output_files"
+mkdir -p "${TEST_STAGE2_DIR}/output_files"
+
 make clean
 make test
 if [ $? -ne 0 ]; then
     exit 1
 fi
 
-$VALGRIND ./tests/test_stage1
+CMD="${VALGRIND} ./tests/test_stage1"
+eval $CMD
 if [ $? -ne 0 ]; then
     exit 1
 fi
 
-$VALGRIND ./tests/test_stage2
+CMD="${VALGRIND} ./tests/test_stage2"
+eval $CMD
 if [ $? -ne 0 ]; then
     exit 1
 fi

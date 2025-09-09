@@ -7,11 +7,12 @@
 **
 \*******************************************************************/
 
-#ifndef STRING_MANIPULATION_H
-# define STRING_MANIPULATION_H
+#ifndef CHRYSALIS_H
+#define CHRYSALIS_H
 
-char* remove_extra_spaces(char* str);
-char* remove_newline(char* str);
-char* copy_string(const char* str);
+typedef struct program_options_s {
+    char* input_filepath;
+    char* output_filepath;
+}program_options_t;
 
-#endif//!STRING_MANIPULATION_H
+#endif//!CHRYSALIS_H

@@ -7,11 +7,15 @@
 **
 \*******************************************************************/
 
-#ifndef STRING_MANIPULATION_H
-# define STRING_MANIPULATION_H
+#ifndef FUNCTION_PATTERNS_H
+#define FUNCTION_PATTERNS_H
 
-char* remove_extra_spaces(char* str);
-char* remove_newline(char* str);
-char* copy_string(const char* str);
+# include "parser/patterns.h"
 
-#endif//!STRING_MANIPULATION_H
+extern const int FUNC_DECL_NO_ARG_TOKENS[];
+extern const pattern_t FUNC_DECL_NO_ARG;
+
+extern const pattern_t FUNCTION_PATTERNS[];
+extern const unsigned int FUNCTION_PATTERNS_SIZE;
+
+#endif//!FUNCTION_PATTERNS_H

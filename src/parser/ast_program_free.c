@@ -7,11 +7,14 @@
 **
 \*******************************************************************/
 
-#ifndef STRING_MANIPULATION_H
-# define STRING_MANIPULATION_H
 
-char* remove_extra_spaces(char* str);
-char* remove_newline(char* str);
-char* copy_string(const char* str);
+# include "parser/ast_types.h"
 
-#endif//!STRING_MANIPULATION_H
+# include <stdlib.h>
+
+void ast_program_free(ast_program_t* prg)
+{
+    if (prg->functions)
+        prg->functions->free(prg->functions);
+    free(prg);
+}

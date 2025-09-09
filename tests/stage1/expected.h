@@ -17,13 +17,19 @@
 
 /* expected main_return_0 */
 
-ast_return_statement_t return_statement_main_return_0_expected = {
-    .value = 0
+ast_operand_integer_integral_t operand_main_return_0_expected = {
+    .value = 0,
+};
+
+ast_statement_return_t return_statement_main_return_0_expected = {
+    .expr.op.operand = (void*)&operand_main_return_0_expected,
+    .expr.op.type = OP_INTEGER_LITERAL
 };
 
 ast_statement_t statement_main_return_0_expected = {
     .type = RETURN,
-    .statement = (void*) &return_statement_main_return_0_expected};
+    .statement = (void*) &return_statement_main_return_0_expected
+};
 
 ast_function_t func_main_return_0_expected = {
     .statements = &statement_main_return_0_expected,
@@ -36,9 +42,13 @@ ast_program_t prg_main_return_0_expected = {
 /* End expected main_return_0 */
 
 /* expected main_return_42 */
+ast_operand_integer_integral_t operand_main_return_42_expected = {
+    .value = 42,
+};
 
-ast_return_statement_t return_statement_main_return_42_expected = {
-    .value = 42
+ast_statement_return_t return_statement_main_return_42_expected = {
+    .expr.op.operand = (void*)&operand_main_return_42_expected,
+    .expr.op.type = OP_INTEGER_LITERAL
 };
 
 ast_statement_t statement_main_return_42_expected = {
@@ -100,7 +110,7 @@ const token_t main_return_0_expected[] = {
             .value = "return",
         },
         {
-            .type = INTERGER_LITERAL,
+            .type = INTEGER_LITERAL,
             .value = "0",
         },
         {
@@ -140,7 +150,7 @@ const token_t main_return_42_expected[] = {
             .value = "return",
         },
         {
-            .type = INTERGER_LITERAL,
+            .type = INTEGER_LITERAL,
             .value = "42",
         },
         {
@@ -179,7 +189,7 @@ const token_t no_main_expected[] = {
             .value = "return",
         },
         {
-            .type = INTERGER_LITERAL,
+            .type = INTEGER_LITERAL,
             .value = "0",
         },
         {
@@ -218,7 +228,7 @@ const token_t main_extra_spaces_expected[] = {
             .value = "return",
         },
         {
-            .type = INTERGER_LITERAL,
+            .type = INTEGER_LITERAL,
             .value = "0",
         },
         {
@@ -253,7 +263,7 @@ const token_t main_missing_closing_parenthesis_expected[] = {
             .value = "return",
         },
         {
-            .type = INTERGER_LITERAL,
+            .type = INTEGER_LITERAL,
             .value = "0",
         },
         {
@@ -288,7 +298,7 @@ const token_t main_missing_opening_parenthesis_expected[] = {
             .value = "return",
         },
         {
-            .type = INTERGER_LITERAL,
+            .type = INTEGER_LITERAL,
             .value = "0",
         },
         {
@@ -327,7 +337,7 @@ const token_t main_missing_closing_curly_bracket_expected[] = {
             .value = "return",
         },
         {
-            .type = INTERGER_LITERAL,
+            .type = INTEGER_LITERAL,
             .value = "0",
         },
         {
@@ -358,7 +368,7 @@ const token_t main_missing_opening_curly_bracket_expected[] = {
             .value = "return",
         },
         {
-            .type = INTERGER_LITERAL,
+            .type = INTEGER_LITERAL,
             .value = "0",
         },
         {
@@ -397,7 +407,7 @@ const token_t main_missing_semicolon_expected[] = {
             .value = "return",
         },
         {
-            .type = INTERGER_LITERAL,
+            .type = INTEGER_LITERAL,
             .value = "0",
         },
         {

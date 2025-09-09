@@ -10,6 +10,7 @@
 # include "parser/ast_types.h"
 
 # include "generator/generator.h"
+# include "generator/stack/stack.h"
 
 # include "files/files.h"
 
@@ -19,14 +20,6 @@
 # include <string.h>
 # include <stdbool.h>
 # include <errno.h>
-
-# define CHECK_LINES_RETURN_NULL()  \
-    if (!lines)                     \
-        return NULL;                \
-
-# define CHECK_LINES_RETURN(ret_val)    \
-    if (!lines)                         \
-        return ret_val;                 \
 
 bool g_main_found = false;
 
@@ -69,30 +62,10 @@ char** append_line(char** lines, const char* line)
     return lines;
 }
 
-char** generate_statement(char** lines, ast_statement_t* statement)
+
+
+static char** generate_start_function(char** lines)
 {
-    ast_return_statement_t *rtn_statement = (ast_return_statement_t*) statement->statement;
-    char* line;
-
-    int line_size = snprintf(NULL, 0, RETURN_INT_STATEMENT, rtn_statement->value);
-    line = malloc(sizeof(char) * (line_size + 1));
-    if (!line) {
-        PERR(OUT_OF_MEM);
-        return NULL;
-    }
-
-    if (snprintf(line, line_size + 1, RETURN_INT_STATEMENT, rtn_statement->value) < 0) {
-        PERR("%s", strerror(errno));
-        return NULL;
-    }
-    lines = append_line(lines, line);
-    CHECK_LINES_RETURN_NULL();
-    return lines;
-}
-
-char** generate_start_function(char** lines)
-{
-    printf("generate_start_function\n");
     const char global_start[] = "global _start\n\n";
     const char start_lbl[] = "_start:\n";
     const char call_main[] = "    call main\n";
@@ -116,7 +89,7 @@ char** generate_start_function(char** lines)
     return lines;
 }
 
-char** generate_function(char** lines, ast_function_t* func)
+static char** generate_function(char** lines, ast_function_t* func)
 {
     int global_lbl_size = GLOBAL_LABEL_STR_SIZE(func->name);
     int lbl_size = LABEL_STR_SIZE(func->name);
@@ -156,8 +129,10 @@ char** generate_function(char** lines, ast_function_t* func)
     lines = append_line(lines, lbl);
     CHECK_LINES_RETURN_NULL();
     free(lbl);
+    lines = generate_stack_setup(lines);
+    CHECK_LINES_RETURN_NULL();
 
-    return generate_statement(lines, func->statements);
+    return generate_statement(lines, func->statements, func->stack);
 }
 
 int generator(ast_program_t* program, const char* target)

@@ -21,8 +21,26 @@
 
 # define LABEL_STR_SIZE(lbl_name) (strlen(LABEL_STR) + strlen(lbl_name) - 1)
 
-# define RETURN_INT_STATEMENT "    mov rax, %d\n    ret\n\n"
+# define RETURN_INT_STATEMENT "    mov rax, %d\n"
+
+# define RETURN_IDENTIFIER_STATEMENT "    mov %s, %s\n"
+
+# define ASSIGN_STATEMENT_INTEGER_LITERAL "    mov %s, %d\n"
 
 int generator(ast_program_t* program, const char* target);
+
+char** generate_statement(char** lines, ast_statement_t* statement, ast_stack_t* stack);
+
+int count_lines(char** lines);
+void free_lines(char **lines);
+char** append_line(char** lines, const char* line);
+
+# define CHECK_LINES_RETURN_NULL()  \
+    if (!lines)                     \
+        return NULL;
+
+# define CHECK_LINES_RETURN(ret_val)    \
+    if (!lines)                         \
+        return ret_val;
 
 #endif//!GENERATOR_H

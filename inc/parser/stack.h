@@ -7,11 +7,14 @@
 **
 \*******************************************************************/
 
-#ifndef STRING_MANIPULATION_H
-# define STRING_MANIPULATION_H
+#ifndef STACK_H
+#define STACK_H
 
-char* remove_extra_spaces(char* str);
-char* remove_newline(char* str);
-char* copy_string(const char* str);
+# include "parser/ast_types.h"
 
-#endif//!STRING_MANIPULATION_H
+void ast_stack_free(ast_stack_t *stack);
+ast_stack_t *ast_stack_create(void);
+int ast_stack_add_entry(ast_stack_t* stack, uint64_t size, const char*identifier);
+
+int populate_stack_struct(ast_program_t* prg);
+#endif//!STACK_H

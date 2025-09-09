@@ -7,11 +7,12 @@
 **
 \*******************************************************************/
 
-#ifndef STRING_MANIPULATION_H
-# define STRING_MANIPULATION_H
+#ifndef PARSER_EXPRESSION_H
+#define PARSER_EXPRESSION_H
 
-char* remove_extra_spaces(char* str);
-char* remove_newline(char* str);
-char* copy_string(const char* str);
+typedef struct token_list_s token_list_t;
+typedef struct ast_expr_s ast_expr_t;
 
-#endif//!STRING_MANIPULATION_H
+int parse_ast_expression(token_list_t **head, ast_expr_t* expr);
+
+#endif//!PARSER_EXPRESSION_H

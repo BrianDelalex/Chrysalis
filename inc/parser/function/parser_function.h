@@ -7,11 +7,11 @@
 **
 \*******************************************************************/
 
-#ifndef STRING_MANIPULATION_H
-# define STRING_MANIPULATION_H
+#ifndef PARSER_FUNCTION_H
+#define PARSER_FUNCTION_H
 
-char* remove_extra_spaces(char* str);
-char* remove_newline(char* str);
-char* copy_string(const char* str);
+# include "tokenizer/token_list.h"
 
-#endif//!STRING_MANIPULATION_H
+void* parse_function_decl_ast(token_list_t* head);
+
+#endif//!PARSER_FUNCTION_H

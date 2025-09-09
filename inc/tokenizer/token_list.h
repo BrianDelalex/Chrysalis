@@ -18,7 +18,8 @@ typedef enum {
     PARENTHESES_OPEN,   // (
     PARENTHESES_CLOSE,  // )
     IDENTIFIER,         // [a-zA-Z] (main for example)
-    INTERGER_LITERAL,   // [0-9]+
+    INTEGER_LITERAL,   // [0-9]+
+    EQUAL,             // =
     UNKNOW,
 }token_type_t;
 
@@ -36,6 +37,7 @@ token_list_t* token_list_create_node(token_list_t* head, token_type_t type, char
 token_list_t* token_list_add_node(token_list_t* head, token_list_t* node);
 void token_list_free(token_list_t* head);
 void token_list_dump(token_list_t* head);
+void token_dump(token_list_t head);
 const char *token_type_as_str(token_type_t type);
 
 #endif//!TOKEN_LIST_H

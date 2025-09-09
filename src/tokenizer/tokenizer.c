@@ -114,7 +114,7 @@ static token_list_t* get_integer_literal_node(char* file, int* file_index)
         return NULL;
     }
     node->next = NULL;
-    node->token.type = INTERGER_LITERAL;
+    node->token.type = INTEGER_LITERAL;
     node->token.value = word;
 
     return node;
@@ -133,6 +133,8 @@ static token_type_t get_delimiter_type(char c)
         return PARENTHESES_CLOSE;
     case ';':
         return SEMICOLON;
+    case '=':
+        return EQUAL;
     default:
         return UNKNOW;
     }
@@ -208,6 +210,8 @@ static char* sanitize_file(char* file)
 
 token_list_t* tokenizer(char* file)
 {
+    token_list_t* tokens;
+
     if (!file)
         return NULL;
     char* clean_file = sanitize_file(file);
@@ -215,5 +219,9 @@ token_list_t* tokenizer(char* file)
     if (!clean_file)
         return NULL;
 
-    return file_to_token_list(clean_file);
+    tokens = file_to_token_list(clean_file);
+
+    free(clean_file);
+
+    return tokens;
 }

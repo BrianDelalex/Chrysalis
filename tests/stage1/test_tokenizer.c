@@ -29,23 +29,40 @@
     token_list_t *file##_list = tokenizer(file);                                                \
     TEST_ASSERT_NOT_NULL(file##_list);                                                          \
     check_token_list(file##_expected, sizeof(file##_expected) / sizeof(token_t), file##_list);  \
-    free(file##_list);                                                                          \
+    token_list_free(file##_list);                                                                          \
     free(file);                                                                                 \
 
 # define TEST_PARSER_WITH_EXPECTED_CONST_STRUCT(test)                                           \
     token_list_t* head = NULL;                                                                  \
     for (unsigned int i = 0; i < sizeof(test##_expected) / sizeof(token_t); i++) {              \
-        head = token_list_create_node(head, test##_expected[i].type, test##_expected[i].value); \
+        char* value = NULL;                                                                     \
+        if (test##_expected[i].value) {                                                         \
+            value = malloc(sizeof(char) * (strlen(test##_expected[i].value) + 1));              \
+            if (!value) {                                                                       \
+                TEST_ASSERT_EQUAL_MESSAGE(1, 0, "Out of memory!");                              \
+            }                                                                                   \
+            memcpy(value, test##_expected[i].value, strlen(test##_expected[i].value) + 1);      \
+        }                                                                                       \
+        head = token_list_create_node(head, test##_expected[i].type, value);                    \
     }                                                                                           \
     ast_program_t* program = create_ast_struct(head);                                           \
     TEST_ASSERT_NOT_NULL(program);                                                              \
     check_ast_struct(prg_##test##_expected, program);                                           \
+    ast_program_free(program);                                                                  \
     token_list_free(head);                                                                      \
 
 # define TEST_PARSER_FAIL(test)                                                                 \
     token_list_t* head = NULL;                                                                  \
     for (unsigned int i = 0; i < sizeof(test##_expected) / sizeof(token_t); i++) {              \
-        head = token_list_create_node(head, test##_expected[i].type, test##_expected[i].value); \
+        char* value = NULL;                                                                     \
+        if (test##_expected[i].value) {                                                         \
+            value = malloc(sizeof(char) * (strlen(test##_expected[i].value) + 1));              \
+            if (!value) {                                                                       \
+                TEST_ASSERT_EQUAL_MESSAGE(1, 0, "Out of memory!");                              \
+            }                                                                                   \
+            memcpy(value, test##_expected[i].value, strlen(test##_expected[i].value) + 1);      \
+        }                                                                                       \
+        head = token_list_create_node(head, test##_expected[i].type, value); \
     }                                                                                           \
     ast_program_t* program = create_ast_struct(head);                                           \
     TEST_ASSERT_NULL(program);                                                                  \
@@ -59,6 +76,7 @@ void tearDown(void)
 {
 }
 
+void check_token_list(const token_t *expected, int expected_size, token_list_t* token_list);
 void check_token_list(const token_t *expected, int expected_size, token_list_t* token_list)
 {
     token_list_t* ptr = token_list;
@@ -77,13 +95,16 @@ void check_token_list(const token_t *expected, int expected_size, token_list_t* 
     }
 }
 
+void test_read_file(void);
 void test_read_file(void)
 {
     char* main_return_0 = read_file(SOURCE_FILES("main_return_0.c"));
     char expected[] = "int main()\n{\n    return 0;\n}\n";
     TEST_ASSERT_EQUAL_STRING(expected, main_return_0);
+    free(main_return_0);
 }
 
+void test_remove_extra_space(void);
 void test_remove_extra_space(void)
 {
     char txt[] = "  int   main  ()\n   {\n   return   0  ;\n   }   ";
@@ -93,6 +114,7 @@ void test_remove_extra_space(void)
     free(clear);
 }
 
+void test_remove_newline(void);
 void test_remove_newline(void)
 {
     char txt[] = "int main ()\n{\nreturn 0 ;\n} ";
@@ -102,57 +124,68 @@ void test_remove_newline(void)
     free(clear);
 }
 
+void test_tokenizer(void);
 void test_tokenizer(void)
 {
     TEST_ASSERT_NULL(tokenizer(NULL));
 }
 
+void test_tokenizer_main_return_0(void);
 void test_tokenizer_main_return_0(void)
 {
     TEST_WITH_SOURCE_FILE(main_return_0);
 }
 
+void test_tokenizer_main_return_42(void);
 void test_tokenizer_main_return_42(void)
 {
     TEST_WITH_SOURCE_FILE(main_return_42);
 }
 
+void test_tokenizer_no_main(void);
 void test_tokenizer_no_main(void)
 {
     TEST_WITH_SOURCE_FILE(no_main);
 }
 
+void test_tokenizer_main_extra_spaces(void);
 void test_tokenizer_main_extra_spaces(void)
 {
     TEST_WITH_SOURCE_FILE(main_extra_spaces);
 }
 
+void test_tokenizer_main_missing_closing_parenthesis(void);
 void test_tokenizer_main_missing_closing_parenthesis(void)
 {
     TEST_WITH_SOURCE_FILE(main_missing_closing_parenthesis);
 }
 
+void test_tokenizer_main_missing_opening_parentheses(void);
 void test_tokenizer_main_missing_opening_parentheses(void)
 {
     TEST_WITH_SOURCE_FILE(main_missing_opening_parenthesis);
 }
 
+void test_tokenizer_main_missing_closing_curly_bracket(void);
 void test_tokenizer_main_missing_closing_curly_bracket(void)
 {
     TEST_WITH_SOURCE_FILE(main_missing_closing_curly_bracket);
 }
 
+void test_tokenizer_main_missing_opening_curly_bracket(void);
 void test_tokenizer_main_missing_opening_curly_bracket(void)
 {
     TEST_WITH_SOURCE_FILE(main_missing_opening_curly_bracket);
 }
 
+void test_tokenizer_main_missing_semicolon(void);
 void test_tokenizer_main_missing_semicolon(void)
 {
     TEST_WITH_SOURCE_FILE(main_missing_semicolon);
 }
 
 
+void check_ast_struct(const ast_program_t expected, ast_program_t *program);
 void check_ast_struct(const ast_program_t expected, ast_program_t *program)
 {
     TEST_ASSERT_NOT_NULL(program->functions);
@@ -160,61 +193,73 @@ void check_ast_struct(const ast_program_t expected, ast_program_t *program)
     TEST_ASSERT_NOT_NULL(program->functions->statements);
     TEST_ASSERT_EQUAL(expected.functions->statements->type, program->functions->statements->type);
     TEST_ASSERT_NOT_NULL(program->functions->statements->statement);
+
     TEST_ASSERT_EQUAL(
-        ((ast_return_statement_t *)expected.functions->statements->statement)->value,
-        ((ast_return_statement_t*)program->functions->statements->statement)->value);
+        ((ast_operand_integer_integral_t*)((ast_statement_return_t *)expected.functions->statements->statement)->expr.op.operand)->value,
+        ((ast_operand_integer_integral_t*)((ast_statement_return_t*)program->functions->statements->statement)->expr.op.operand)->value);
 }
 
+void test_parser_main_return_0(void);
 void test_parser_main_return_0(void)
 {
     TEST_PARSER_WITH_EXPECTED_CONST_STRUCT(main_return_0);
 }
 
+void test_parser_main_return_42(void);
 void test_parser_main_return_42(void)
 {
     TEST_PARSER_WITH_EXPECTED_CONST_STRUCT(main_return_42);
 }
 
+void test_parser_no_main(void);
 void test_parser_no_main(void)
 {
     TEST_PARSER_WITH_EXPECTED_CONST_STRUCT(no_main);
 }
 
+void test_parser_main_missing_closing_parenthesis(void);
 void test_parser_main_missing_closing_parenthesis(void)
 {
     TEST_PARSER_FAIL(main_missing_closing_parenthesis);
 }
 
+void test_parser_main_missing_opening_parentheses(void);
 void test_parser_main_missing_opening_parentheses(void)
 {
     TEST_PARSER_FAIL(main_missing_opening_parenthesis);
 }
 
+void test_parser_main_missing_closing_curly_bracket(void);
 void test_parser_main_missing_closing_curly_bracket(void)
 {
     TEST_PARSER_FAIL(main_missing_closing_curly_bracket);
 }
 
+void test_parser_main_missing_opening_curly_bracket(void);
 void test_parser_main_missing_opening_curly_bracket(void)
 {
     TEST_PARSER_FAIL(main_missing_opening_curly_bracket);
 }
 
+void test_parser_main_missing_semicolon(void);
 void test_parser_main_missing_semicolon(void)
 {
     TEST_PARSER_FAIL(main_missing_semicolon);
 }
 
+void test_generator_main_return_0(void);
 void test_generator_main_return_0(void)
 {
     TEST_ASSERT_EQUAL(0, generator(&prg_main_return_0_expected, OUTPUT_ASM_FILE("/gen_main_return_0.asm")));
 }
 
+void test_generator_main_return_42(void);
 void test_generator_main_return_42(void)
 {
     TEST_ASSERT_EQUAL(0, generator(&prg_main_return_42_expected, OUTPUT_ASM_FILE("/gen_main_return_42.asm")));
 }
 
+void test_generator_no_main(void);
 void test_generator_no_main(void)
 {
     TEST_ASSERT_EQUAL(0, generator(&prg_no_main_expected, OUTPUT_ASM_FILE("/gen_no_main.asm")));

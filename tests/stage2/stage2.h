@@ -7,11 +7,11 @@
 **
 \*******************************************************************/
 
-#ifndef STRING_MANIPULATION_H
-# define STRING_MANIPULATION_H
+#ifndef STAGE2_H
+#define STAGE2_H
 
-char* remove_extra_spaces(char* str);
-char* remove_newline(char* str);
-char* copy_string(const char* str);
+# define SOURCE_FILES(file) STAGE2_DIR "/source_files/" file
 
-#endif//!STRING_MANIPULATION_H
+# define OUTPUT_ASM_FILE(file) STAGE2_DIR "/output_files/" file
+
+#endif//STAGE2_H

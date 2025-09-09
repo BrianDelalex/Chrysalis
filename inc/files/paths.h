@@ -7,11 +7,9 @@
 **
 \*******************************************************************/
 
-#ifndef STRING_MANIPULATION_H
-# define STRING_MANIPULATION_H
+#ifndef PATHS_H
+#define PATHS_H
 
-char* remove_extra_spaces(char* str);
-char* remove_newline(char* str);
-char* copy_string(const char* str);
+char *get_absolute_path(const char* filepath);
 
-#endif//!STRING_MANIPULATION_H
+#endif//!PATHS_H

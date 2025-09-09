@@ -11,14 +11,14 @@
 
 # include "parser/patterns.h"
 
-# include "parser/function/ast_create_functions.h"
+# include "parser/function/parser_function.h"
 
 # include "utils/logging.h"
 
 # include <stdlib.h>
 # include <string.h>
 
-ast_function_t* get_function_ast(token_list_t* head)
+ast_function_t* parse_function_ast(token_list_t* head)
 {
     const pattern_t* pattern = find_function_pattern(head);
 
@@ -30,7 +30,7 @@ ast_function_t* get_function_ast(token_list_t* head)
     return pattern->ast_create(head);
 }
 
-void* create_function_decl_ast(token_list_t* head)
+void* parse_function_decl_ast(token_list_t* head)
 {
     ast_function_t *func;
     token_list_t* ptr = head;
@@ -83,7 +83,7 @@ void* create_function_decl_ast(token_list_t* head)
     ptr = ptr->next;
 
     while (ptr && ptr->token.type != CURLY_CLOSE) {
-        ast_statement_t* statement = get_statement_ast(&ptr);
+        ast_statement_t* statement = parse_statement_ast(&ptr);
         if (!statement) {
             func->free(func);
             return NULL;

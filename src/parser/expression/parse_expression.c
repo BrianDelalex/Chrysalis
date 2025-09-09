@@ -11,12 +11,12 @@
 
 # include "parser/ast_types.h"
 
-# include "parser/expression/expression.h"
+# include "parser/expression/parser_expression.h"
 
 # include "utils/logging.h"
 # include "utils/string_manipulation.h"
 
-int create_ast_expression(token_list_t **head, ast_expr_t* expr)
+int parse_ast_expression(token_list_t **head, ast_expr_t* expr)
 {
     token_list_t* ptr = *head;
 

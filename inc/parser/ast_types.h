@@ -100,8 +100,8 @@ void ast_function_free(ast_function_t* func);
 void ast_program_free(ast_program_t* prg);
 
 /* ast struct creation function */
-ast_function_t* get_function_ast(token_list_t* head);
-ast_statement_t* get_statement_ast(token_list_t** head);
+ast_function_t* parse_function_ast(token_list_t* head);
+ast_statement_t* parse_statement_ast(token_list_t** head);
 
 /* ast struct initialization macro */
 # define INIT_AST_FUNCTION(func) func = {.statement = NULL, .name = NULL, .free = &ast_function_free}

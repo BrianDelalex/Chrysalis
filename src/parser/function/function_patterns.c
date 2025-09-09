@@ -10,14 +10,14 @@
 
 # include "parser/patterns.h"
 
-# include "parser/function/ast_create_functions.h"
+# include "parser/function/parser_function.h"
 
 const int FUNC_DECL_NO_ARG_TOKENS[] = {KEYWORD, IDENTIFIER, PARENTHESES_OPEN, PARENTHESES_CLOSE, CURLY_OPEN};
 const pattern_t FUNC_DECL_NO_ARG = {
     .tokens = FUNC_DECL_NO_ARG_TOKENS,
     .token_count = GET_TOKEN_COUNT(FUNC_DECL_NO_ARG_TOKENS),
     .type = FUNCTION_DECL,
-    .ast_create = &create_function_decl_ast,
+    .ast_create = &parse_function_decl_ast,
 };
 
 const pattern_t FUNCTION_PATTERNS[] = {

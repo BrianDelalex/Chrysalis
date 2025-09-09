@@ -7,11 +7,11 @@
 **
 \*******************************************************************/
 
-#ifndef AST_CREATE_FUNCTIONS_H
-#define AST_CREATE_FUNCTIONS_H
+#ifndef PARSER_FUNCTION_H
+#define PARSER_FUNCTION_H
 
 # include "tokenizer/token_list.h"
 
-void* create_function_decl_ast(token_list_t* head);
+void* parse_function_decl_ast(token_list_t* head);
 
-#endif//!AST_CREATE_FUNCTIONS_H
+#endif//!PARSER_FUNCTION_H

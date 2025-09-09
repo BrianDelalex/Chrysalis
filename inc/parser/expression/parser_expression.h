@@ -7,12 +7,12 @@
 **
 \*******************************************************************/
 
-#ifndef EXPRESSION_H
-#define EXPRESSION_H
+#ifndef PARSER_EXPRESSION_H
+#define PARSER_EXPRESSION_H
 
 typedef struct token_list_s token_list_t;
 typedef struct ast_expr_s ast_expr_t;
 
-int create_ast_expression(token_list_t **head, ast_expr_t* expr);
+int parse_ast_expression(token_list_t **head, ast_expr_t* expr);
 
-#endif//!EXPRESSION_H
+#endif//!PARSER_EXPRESSION_H

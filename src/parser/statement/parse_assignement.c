@@ -14,7 +14,7 @@
 # include "parser/statement/ast_create_statement.h"
 # include "parser/statement/statement_free.h"
 # include "parser/types/types.h"
-# include "parser/expression/expression.h"
+# include "parser/expression/parser_expression.h"
 
 # include "utils/logging.h"
 # include "utils/string_manipulation.h"
@@ -32,7 +32,7 @@ static type_t get_type(token_list_t** head)
     return (type_t) {.type_id = -1, .size = 0};
 }
 
-void* create_statement_assigment_decl_ast(token_list_t* head)
+void* parse_assignment_decl_statement_ast(token_list_t* head)
 {
     ast_statement_t* statement;
     ast_statement_assign_t* assign;
@@ -70,7 +70,7 @@ void* create_statement_assigment_decl_ast(token_list_t* head)
     // Skip '=' token
     head = head->next;
 
-    if (create_ast_expression(&head, &(assign->expr)) != 0) {
+    if (parse_ast_expression(&head, &(assign->expr)) != 0) {
         PERR("ERROR - unable to create ast_expression\n");
         return NULL;
     }

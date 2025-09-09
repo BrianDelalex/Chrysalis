@@ -26,7 +26,7 @@ const pattern_t STATEMENT_RET_EXPR = {
     .tokens = STATEMENT_RET_EXPR_TOKENS,
     .token_count = GET_TOKEN_COUNT(STATEMENT_RET_EXPR_TOKENS),
     .type = STATEMENT,
-    .ast_create = &create_statement_return_ast
+    .ast_create = &parse_return_statement_ast
 };
 const int STATEMENT_VAR_DECL_TOKENS[] = {TOKEN_TYPE, IDENTIFIER, SEMICOLON};
 const pattern_t STATEMENT_VAR_DECL = {
@@ -41,7 +41,7 @@ const pattern_t STATEMENT_VAR_DECL_ASSIGN = {
     .tokens = STATEMENT_VAR_DECL_ASSIGN_TOKENS,
     .token_count = GET_TOKEN_COUNT(STATEMENT_VAR_DECL_ASSIGN_TOKENS),
     .type = STATEMENT,
-    .ast_create = &create_statement_assigment_decl_ast
+    .ast_create = &parse_assignment_decl_statement_ast
 };
 
 const pattern_t STATEMENT_PATTERNS[] = {

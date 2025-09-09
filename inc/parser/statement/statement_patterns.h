@@ -15,7 +15,7 @@
 # include <stddef.h>
 # include <stdio.h>
 
-void* create_statement_return_ast(token_list_t* head);
+void* parse_return_statement_ast(token_list_t* head);
 
 
 extern const int STATEMENT_RET_EXPR_TOKENS[];

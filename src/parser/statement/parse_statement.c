@@ -14,7 +14,7 @@
 
 # include <string.h>
 
-ast_statement_t* get_statement_ast(token_list_t** head)
+ast_statement_t* parse_statement_ast(token_list_t** head)
 {
     token_list_t* head_save = *head;
     const pattern_t* pattern = find_statement_pattern(head);

@@ -65,19 +65,12 @@ static ast_statement_return_t* create_ast_statement_return(token_list_t* head)
     }
 }
 
-void* create_statement_return_ast(token_list_t* head)
+void* parse_return_statement_ast(token_list_t* head)
 {
     ast_statement_t* statement;
     ast_statement_return_t* rtn_statement;
 
-    if (!head || head->token.type != KEYWORD || strcmp(head->token.value, "return") != 0) {
-        PERR("Expected 'return' keyword instead found:");
-        if (head)
-            token_dump(*head);
-        else
-            PERR("END OF FILE \n");
-        return NULL;
-    }
+    // Skip keyword 'return'
     head = head->next;
 
     rtn_statement = create_ast_statement_return(head);

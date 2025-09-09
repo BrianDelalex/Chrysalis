@@ -4,7 +4,7 @@ TEST_COMPILE_SCRIPT=tests/test_compile.sh
 TEST_COMPILE_NO_MAIN_SCRIPT=tests/test_compile_no_main.sh
 TEST_STAGE1_DIR=tests/stage1
 TEST_STAGE2_DIR=tests/stage2
-echo "MEMCHECK: $MEMCHECK"
+
 if [ -n "$MEMCHECK" ]; then
     VALGRIND=valgrind --leak-check=full --error-exitcode=1
 else

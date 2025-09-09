@@ -30,19 +30,23 @@ static char** generate_return_statement(char** lines, ast_statement_t* statement
         char* access_stack = asm_string_access_stack(stack, identifier);
         const char* reg = ast_get_accumulator_register_from_size(stack, identifier);
 
-        if (!access_stack)
+        if (!access_stack) {
+            free_lines(lines);
             return NULL;
+        }
 
         int line_size = snprintf(NULL, 0, RETURN_IDENTIFIER_STATEMENT, reg, access_stack);
         line = malloc(sizeof(char) * (line_size + 1));
         if (!line) {
             PERR(OUT_OF_MEM);
+            free_lines(lines);
             return NULL;
         }
 
         if (snprintf(line, line_size + 1, RETURN_IDENTIFIER_STATEMENT, reg, access_stack) < 0) {
             PERR("%s", strerror(errno));
             free(access_stack);
+            free_lines(lines);
             return NULL;
         }
         free(access_stack);
@@ -52,11 +56,13 @@ static char** generate_return_statement(char** lines, ast_statement_t* statement
         line = malloc(sizeof(char) * (line_size + 1));
         if (!line) {
             PERR(OUT_OF_MEM);
+            free_lines(lines);
             return NULL;
         }
 
         if (snprintf(line, line_size + 1, RETURN_INT_STATEMENT, value) < 0) {
             PERR("%s", strerror(errno));
+            free_lines(lines);
             return NULL;
         }
     }
@@ -86,12 +92,19 @@ static char** generate_assignment_statement(char** lines, ast_statement_t* state
     line = malloc(sizeof(char) * (line_size + 1));
     if (!line) {
         PERR(OUT_OF_MEM);
+        free(access_stack);
+        free_lines(lines);
         return NULL;
     }
     if (snprintf(line, line_size + 1, ASSIGN_STATEMENT_INTEGER_LITERAL, access_stack, right_op) < 0) {
         PERR("%s", strerror(errno));
+        free(access_stack);
+        free_lines(lines);
         return NULL;
     }
+
+    free(access_stack);
+
     lines = append_line(lines, line);
     CHECK_LINES_RETURN_NULL();
     free(line);
@@ -111,6 +124,7 @@ char** generate_statement(char** lines, ast_statement_t* statement, ast_stack_t*
                 lines = generate_assignment_statement(lines, ptr, stack);
                 break;
             default:
+                free_lines(lines);
                 PERR("Unknow statement type.\n");
                 return NULL;
         }

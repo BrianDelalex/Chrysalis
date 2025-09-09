@@ -14,22 +14,19 @@
 
 # include <stdlib.h>
 
+void expression_free(ast_expr_t* expr);
+
 void statement_return_free(ast_statement_return_t *statement)
 {
-    ast_expr_operand_t op = statement->expr.op;
-    if (op.type == OP_IDENTIFIER) {
-        ast_operand_identifier_t *op_identifier = (ast_operand_identifier_t*) op.operand;
-        if (op_identifier->identifier)
-            free(op_identifier->identifier);
-    }
-    if (statement->expr.op.operand)
-        free(statement->expr.op.operand);
+    expression_free(&(statement->expr));
     free(statement);
 }
 
 void statement_assign_decl_free(ast_statement_assign_t *statement)
 {
     free(statement->var.identifier);
+    expression_free(&(statement->expr));
+    free(statement);
 }
 
 void statement_free(ast_statement_t *statement)

@@ -14,13 +14,15 @@
 
 ast_statement_t* ast_statement_list_add_node(ast_statement_t* head, ast_statement_t* node)
 {
+    ast_statement_t* ptr = head;
+
     if (!head)
         return node;
 
-    while (head->next) {
-        head = head->next;
+    while (ptr->next) {
+        ptr = ptr->next;
     }
-    head->next = node;
+    ptr->next = node;
     return head;
 }
 

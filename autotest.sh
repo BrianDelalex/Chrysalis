@@ -6,7 +6,7 @@ TEST_STAGE1_DIR=tests/stage1
 TEST_STAGE2_DIR=tests/stage2
 
 if [ -n "$MEMCHECK" ]; then
-    VALGRIND=valgrind --leak-check=full --error-exitcode=1
+    VALGRIND="valgrind --leak-check=full --error-exitcode=1"
 else
     VALGRIND=
 fi
@@ -35,5 +35,7 @@ echo "---- Compilation test stage1 ----"
 echo "---- Compilation test stage2 ----"
 ./$TEST_COMPILE_SCRIPT $TEST_STAGE2_DIR gen_main_return_identifier 0
 ./$TEST_COMPILE_SCRIPT $TEST_STAGE2_DIR gen_main_return_identifier_42 42
+./$TEST_COMPILE_SCRIPT $TEST_STAGE2_DIR gen_post_decl_assign_0 0
+./$TEST_COMPILE_SCRIPT $TEST_STAGE2_DIR gen_post_decl_assign_42 42
 
 exit 0

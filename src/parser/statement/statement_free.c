@@ -27,6 +27,11 @@ void statement_return_free(ast_statement_return_t *statement)
     free(statement);
 }
 
+void statement_assign_decl_free(ast_statement_assign_t *statement)
+{
+    free(statement->var.identifier);
+}
+
 void statement_free(ast_statement_t *statement)
 {
     switch(statement->type) {
@@ -34,6 +39,11 @@ void statement_free(ast_statement_t *statement)
         ast_statement_return_t* rtn = (ast_statement_return_t*)statement->statement;
         if (rtn->free)
             rtn->free(rtn);
+        break;
+    case ASSIGN:
+        ast_statement_assign_t* assign = (ast_statement_assign_t*)statement->statement;
+        if (assign->free)
+            assign->free(assign);
         break;
     default:
         PERR("Unexpected statement type\n");

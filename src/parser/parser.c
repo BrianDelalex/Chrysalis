@@ -9,6 +9,7 @@
 
 # include "parser/parser.h"
 # include "parser/ast_types.h"
+# include "parser/stack.h"
 
 # include "tokenizer/token_list.h"
 
@@ -50,6 +51,11 @@ ast_program_t* create_ast_struct(token_list_t* tokens)
         return NULL;
     }
     program->functions = func;
+
+    if (populate_stack_struct(program) != 0) {
+        ast_program_free(program);
+    }
+
     dump_ast(program);
     return program;
 }

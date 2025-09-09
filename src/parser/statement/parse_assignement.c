@@ -52,6 +52,7 @@ void* parse_assignment_decl_statement_ast(token_list_t* head)
         return NULL;
     }
     statement->statement = (void*) assign;
+    assign->free = &statement_assign_decl_free;
 
     type_t type = get_type(&head);
     if (type.type_id == -1) {
@@ -74,6 +75,5 @@ void* parse_assignment_decl_statement_ast(token_list_t* head)
         PERR("ERROR - unable to create ast_expression\n");
         return NULL;
     }
-    PERR("TODO - REGISTER STACK ENTRY\n");
     return statement;
 }

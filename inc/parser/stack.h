@@ -16,4 +16,5 @@ void ast_stack_free(ast_stack_t *stack);
 ast_stack_t *ast_stack_create(void);
 int ast_stack_add_entry(ast_stack_t* stack, uint64_t size, const char*identifier);
 
+int populate_stack_struct(ast_program_t* prg);
 #endif//!STACK_H

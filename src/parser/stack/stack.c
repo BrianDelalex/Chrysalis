@@ -44,7 +44,7 @@ int ast_stack_add_entry(ast_stack_t* stack, uint64_t size, const char*identifier
 {
     ast_stack_entry_t* new;
     ast_stack_entry_t* entries = stack->entries;
-    uint64_t offset = 0;
+    uint64_t offset = size;
 
     new = malloc(sizeof(ast_stack_entry_t));
     if (!new) {

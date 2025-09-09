@@ -51,6 +51,7 @@ typedef enum {
 typedef struct ast_statement_assign_s {
     ast_variable_t var;
     ast_expr_t expr;
+    void (*free)(struct ast_statement_assign_s *);
 }ast_statement_assign_t;
 
 typedef struct ast_statement_return_s {

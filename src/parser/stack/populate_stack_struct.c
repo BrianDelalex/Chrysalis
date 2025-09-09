@@ -14,10 +14,14 @@ static int popuplate_function_stack_struct(ast_function_t* func)
     ast_statement_t* statements = func->statements;
 
     while (statements) {
-        if (statements->type == ASSIGN) {
+        if (statements->type == ASSIGN_DECL) {
             ast_statement_assign_t* assign = (ast_statement_assign_t*)statements->statement;
 
             if (ast_stack_add_entry(func->stack, assign->var.type.size, assign->var.identifier) != 0)
+                return -1;
+        } else if (statements->type == DECL) {
+            ast_statement_decl_t* decl = (ast_statement_decl_t*)statements->statement;
+            if(ast_stack_add_entry(func->stack, decl->var.type.size, decl->var.identifier) != 0)
                 return -1;
         }
         statements = statements->next;

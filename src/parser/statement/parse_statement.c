@@ -24,5 +24,6 @@ ast_statement_t* parse_statement_ast(token_list_t** head)
         token_dump(*head_save);
         return NULL;
     }
+
     return pattern->ast_create(head_save);
 }

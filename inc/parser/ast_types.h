@@ -46,7 +46,14 @@ typedef struct ast_variable_s {
 typedef enum {
     RETURN,
     ASSIGN,
+    ASSIGN_DECL,
+    DECL,
 }ast_statement_type_t;
+
+typedef struct ast_statement_decl_s {
+    ast_variable_t var;
+    void (*free)(struct ast_statement_decl_s*);
+}ast_statement_decl_t;
 
 typedef struct ast_statement_assign_s {
     ast_variable_t var;

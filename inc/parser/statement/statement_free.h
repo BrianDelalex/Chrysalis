@@ -13,6 +13,7 @@
 # include "parser/ast_types.h"
 void statement_return_free(ast_statement_return_t *statement);
 void statement_assign_decl_free(ast_statement_assign_t *statement);
+void statement_decl_free(ast_statement_decl_t* decl);
 void statement_free(ast_statement_t *statement);
 
 #endif//!STATEMENT_FREE_H

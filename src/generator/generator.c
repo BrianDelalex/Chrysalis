@@ -66,7 +66,6 @@ char** append_line(char** lines, const char* line)
 
 static char** generate_start_function(char** lines)
 {
-    printf("generate_start_function\n");
     const char global_start[] = "global _start\n\n";
     const char start_lbl[] = "_start:\n";
     const char call_main[] = "    call main\n";

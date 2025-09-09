@@ -120,12 +120,17 @@ char** generate_statement(char** lines, ast_statement_t* statement, ast_stack_t*
             case RETURN:
                 lines = generate_return_statement(lines, ptr, stack);
                 break;
+            case ASSIGN_DECL:
+                lines = generate_assignment_statement(lines, ptr, stack);
+                break;
             case ASSIGN:
                 lines = generate_assignment_statement(lines, ptr, stack);
                 break;
+            case DECL:
+                break;
             default:
                 free_lines(lines);
-                PERR("Unknow statement type.\n");
+                PERR("Unknow statement type. %d\n", ptr->type);
                 return NULL;
         }
         ptr = ptr->next;

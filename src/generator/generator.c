@@ -10,6 +10,7 @@
 # include "parser/ast_types.h"
 
 # include "generator/generator.h"
+# include "generator/stack/stack.h"
 
 # include "files/files.h"
 
@@ -129,6 +130,8 @@ static char** generate_function(char** lines, ast_function_t* func)
     lines = append_line(lines, lbl);
     CHECK_LINES_RETURN_NULL();
     free(lbl);
+    lines = generate_stack_setup(lines);
+    CHECK_LINES_RETURN_NULL();
 
     return generate_statement(lines, func->statements, func->stack);
 }

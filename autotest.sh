@@ -6,7 +6,7 @@ TEST_STAGE1_DIR=tests/stage1
 TEST_STAGE2_DIR=tests/stage2
 echo "MEMCHECK: $MEMCHECK"
 if [ -n "$MEMCHECK" ]; then
-    VALGRIND=valgrind --lead-check=full --error-exitcode=1
+    VALGRIND=valgrind --leak-check=full --error-exitcode=1
 else
     VALGRIND=
 fi

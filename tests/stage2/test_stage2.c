@@ -11,8 +11,8 @@
 
 # include "stage2.h"
 
-void test_tokenize_main_return_identifier(void);
-void test_tokenize_main_return_identifier(void)
+void test_all_main_return_identifier(void);
+void test_all_main_return_identifier(void)
 {
     char* file = read_file(SOURCE_FILES("main_return_identifier.c"));
     TEST_ASSERT_NOT_NULL_MESSAGE(file, "file was null");
@@ -26,8 +26,8 @@ void test_tokenize_main_return_identifier(void)
     ast_program_free(prg);
 }
 
-void test_tokenize_main_return_identifier_42(void);
-void test_tokenize_main_return_identifier_42(void)
+void test_all_main_return_identifier_42(void);
+void test_all_main_return_identifier_42(void)
 {
     char* file = read_file(SOURCE_FILES("main_return_identifier_42.c"));
     TEST_ASSERT_NOT_NULL_MESSAGE(file, "file was null");
@@ -41,8 +41,38 @@ void test_tokenize_main_return_identifier_42(void)
     ast_program_free(prg);
 }
 
-void test_tokenize_main_return_undef_identifier(void);
-void test_tokenize_main_return_undef_identifier(void)
+void test_all_post_decl_assign_0(void);
+void test_all_post_decl_assign_0(void)
+{
+    char* file = read_file(SOURCE_FILES("post_decl_assign_0.c"));
+    TEST_ASSERT_NOT_NULL_MESSAGE(file, "file was null");
+    token_list_t* tokens = tokenizer(file);
+    TEST_ASSERT_NOT_NULL_MESSAGE(tokens, "tokens was null.");
+    ast_program_t* prg = create_ast_struct(tokens);
+    TEST_ASSERT_NOT_NULL_MESSAGE(prg, "prg was null.");
+    TEST_ASSERT_EQUAL(0, generator(prg, OUTPUT_ASM_FILE("gen_post_decl_assign_0.asm")));
+    free(file);
+    token_list_free(tokens);
+    ast_program_free(prg);
+}
+
+void test_all_post_decl_assign_42(void);
+void test_all_post_decl_assign_42(void)
+{
+    char* file = read_file(SOURCE_FILES("post_decl_assign_42.c"));
+    TEST_ASSERT_NOT_NULL_MESSAGE(file, "file was null");
+    token_list_t* tokens = tokenizer(file);
+    TEST_ASSERT_NOT_NULL_MESSAGE(tokens, "tokens was null.");
+    ast_program_t* prg = create_ast_struct(tokens);
+    TEST_ASSERT_NOT_NULL_MESSAGE(prg, "prg was null.");
+    TEST_ASSERT_EQUAL(0, generator(prg, OUTPUT_ASM_FILE("gen_post_decl_assign_42.asm")));
+    free(file);
+    token_list_free(tokens);
+    ast_program_free(prg);
+}
+
+void test_all_main_return_undef_identifier(void);
+void test_all_main_return_undef_identifier(void)
 {
     char* file = read_file(SOURCE_FILES("main_return_undef_identifier.c"));
     TEST_ASSERT_NOT_NULL(file);

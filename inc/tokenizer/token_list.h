@@ -20,6 +20,7 @@ typedef enum {
     IDENTIFIER,         // [a-zA-Z] (main for example)
     INTEGER_LITERAL,   // [0-9]+
     EQUAL,             // =
+    PLUS,              // +
     UNKNOW,
 }token_type_t;
 

@@ -16,6 +16,7 @@
 
 # include "utils/string_manipulation.h"
 # include "utils/char.h"
+# include "utils/logging.h"
 
 # include "tokenizer/token_list.h"
 # include "tokenizer/keywords.h"
@@ -135,6 +136,8 @@ static token_type_t get_delimiter_type(char c)
         return SEMICOLON;
     case '=':
         return EQUAL;
+    case '+':
+        return PLUS;
     default:
         return UNKNOW;
     }
@@ -152,6 +155,10 @@ static token_list_t* get_delimiter_node(char c)
         return NULL;
     node->next = NULL;
     node->token.type = get_delimiter_type(c);
+    if (node->token.type == UNKNOW) {
+        PERR("UNKNOW delimiter %c\n", c);
+        return NULL;
+    }
     node->token.value = NULL;
 
     return node;

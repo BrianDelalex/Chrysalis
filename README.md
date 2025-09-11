@@ -19,7 +19,7 @@ As the roadmap keeps getting bigger, I've moved it to its [own page](https://git
 ## Build and run
 ```
 $ make
-$ ./chrysalis
+$ ./chrysalis <[options]> <file>
 ```
 
 ## Test

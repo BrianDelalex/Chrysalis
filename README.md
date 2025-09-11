@@ -41,9 +41,31 @@ Requirement for stage2 validation:
 - [x] Using the AST, Chrysalis can generate x86_64 assembly code for stage 2 test files.
 - [x] No regression - all previous stages tests still pass.
 
+## Stage3
+At the end of this stage, the compiler should be able to compile a simple program that can add values. These values can either be an integer literal or a variable. (See example below)
+```
+int main()
+{
+    int retval = 4 + 2;
+
+    return retval;
+}
+```
+Language support addition:
+- Addition expression with '+' sign.
+- Chained addition expression (2 + 3 + var + 5...).
+- Assigning addition expression to variable.
+- Using addition expression in 'return' statement.
+
+Requirement for stage3 validation:
+- [ ] Chrysalis can tokenize (or lex) all stage 3 examples in the test suite.
+- [ ] Chrysalis can parse a list of tokens to return an AST.
+- [ ] Using the AST, Chrysalis can generate x86_64 assembly code for stage 3 test files.
+- [ ] No regression - all previous stages tests still pass.
+
 ## Future work
 At the end of a stage, I decide what I want to do next.
-The features coming after Stage 2 are yet to be decided.
+The features coming after Stage 3 are yet to be decided.
 
 # How to build
 ## Dependencies

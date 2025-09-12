@@ -10,11 +10,14 @@
 # include <string.h>
 # include <stdlib.h>
 
+# include "attributes.h"
+
 # include "parser/ast_types.h"
 # include "parser/statement/parser_statement.h"
 # include "parser/statement/statement_free.h"
 # include "parser/types/types.h"
 # include "parser/expression/parser_expression.h"
+# include "parser/expression/expression_patterns.h"
 
 # include "utils/logging.h"
 # include "utils/string_manipulation.h"
@@ -46,7 +49,7 @@ static ast_statement_t* create_ast_statement_struct(ast_statement_type_t type)
     return statement;
 }
 
-void* parse_decl_assignment_statement_ast(token_list_t* head)
+ast_statement_t* parse_decl_assignment_statement_ast(token_list_t* head, const expr_pattern_t* pattern)
 {
     ast_statement_t* statement;
     ast_statement_assign_t* assign;
@@ -59,6 +62,7 @@ void* parse_decl_assignment_statement_ast(token_list_t* head)
     assign = malloc(sizeof(ast_statement_assign_t));
     if (!assign) {
         PERR(OUT_OF_MEM);
+        free(statement);
         return NULL;
     }
     statement->statement = (void*) assign;
@@ -67,12 +71,16 @@ void* parse_decl_assignment_statement_ast(token_list_t* head)
     type_t type = get_type(&head);
     if (type.type_id == -1) {
         PERR("Unknow type.\n");
+        free(assign);
+        free(statement);
         return NULL;
     }
     assign->var.type = type;
 
     char *identifier = copy_string(head->token.value);
     if (!identifier) {
+        free(assign);
+        free(statement);
         return NULL;
     }
     assign->var.identifier = identifier;
@@ -81,14 +89,17 @@ void* parse_decl_assignment_statement_ast(token_list_t* head)
     // Skip '=' token
     head = head->next;
 
-    if (parse_ast_expression(&head, &(assign->expr)) != 0) {
-        PERR("ERROR - unable to create ast_expression\n");
-        return NULL;
+    assign->expr = pattern->parse_ast(head);
+    if (!assign->expr.op.operand) {
+        free(identifier);
+        free(assign);
+        free(statement);
     }
+
     return statement;
 }
 
-void *parse_decl_statement_ast(token_list_t* head)
+ast_statement_t* parse_decl_statement_ast(token_list_t* head, UNUSED const expr_pattern_t* pattern)
 {
     ast_statement_t* statement;
     ast_statement_decl_t* decl;
@@ -122,7 +133,7 @@ void *parse_decl_statement_ast(token_list_t* head)
     return statement;
 }
 
-void* parse_assignment_statement_ast(token_list_t* head)
+ast_statement_t* parse_assignment_statement_ast(token_list_t* head, const expr_pattern_t* pattern)
 {
     ast_statement_t* statement;
     ast_statement_assign_t* assign;
@@ -135,6 +146,7 @@ void* parse_assignment_statement_ast(token_list_t* head)
     assign = malloc(sizeof(ast_statement_assign_t));
     if (!assign) {
         PERR(OUT_OF_MEM);
+        free(statement);
         return NULL;
     }
     statement->statement = (void*) assign;
@@ -145,6 +157,7 @@ void* parse_assignment_statement_ast(token_list_t* head)
 
     char *identifier = copy_string(head->token.value);
     if (!identifier) {
+        free(statement);
         return NULL;
     }
     assign->var.identifier = identifier;
@@ -153,9 +166,13 @@ void* parse_assignment_statement_ast(token_list_t* head)
     // Skip '=' token
     head = head->next;
 
-    if (parse_ast_expression(&head, &(assign->expr)) != 0) {
-        PERR("ERROR - unable to create ast_expression\n");
+    assign->expr = pattern->parse_ast(head);
+    if (!assign->expr.op.operand) {
+        free(statement);
+        free(assign);
+        free(identifier);
         return NULL;
     }
+
     return statement;
 }

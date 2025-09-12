@@ -29,11 +29,13 @@ SOURCE_DIRS :=	$(PROJECT_ROOT_DIR)/src/tokenizer	\
 				$(PROJECT_ROOT_DIR)/src/parser		\
 				$(PROJECT_ROOT_DIR)/src/parser/function	\
 				$(PROJECT_ROOT_DIR)/src/parser/statement	\
-				$(PROJECT_ROOT_DIR)/src/parser/expression/	\
-				$(PROJECT_ROOT_DIR)/src/parser/types/		\
+				$(PROJECT_ROOT_DIR)/src/parser/expression	\
+				$(PROJECT_ROOT_DIR)/src/parser/types		\
 				$(PROJECT_ROOT_DIR)/src/parser/stack		\
+				$(PROJECT_ROOT_DIR)/src/parser/operation	\
 				$(PROJECT_ROOT_DIR)/src/generator			\
 				$(PROJECT_ROOT_DIR)/src/generator/stack		\
+				$(PROJECT_ROOT_DIR)/src/generator/asm		\
 
 SOURCE_FILES := $(wildcard $(addsuffix /*.c, $(SOURCE_DIRS)))
 

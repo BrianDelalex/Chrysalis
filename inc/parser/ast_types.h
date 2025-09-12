@@ -18,8 +18,9 @@
 
 typedef enum {
     OP_IDENTIFIER,
-    OP_INTEGER_LITERAL
-}ast_expr_operand_type_t;
+    OP_INTEGER_LITERAL,
+    OP_OPERATION
+}OPERAND_TYPE_T;
 
 typedef struct ast_operand_integer_integral_s {
     int value;
@@ -30,7 +31,7 @@ typedef struct ast_operand_identifier_s {
 }ast_operand_identifier_t;
 
 typedef struct ast_expr_operand_s {
-    ast_expr_operand_type_t type;
+    OPERAND_TYPE_T type;
     void *operand;
 }ast_expr_operand_t;
 

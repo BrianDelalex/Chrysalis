@@ -10,6 +10,8 @@
 # include <stdlib.h>
 # include <string.h>
 
+# include "attributes.h"
+
 # include "parser/ast_types.h"
 # include "parser/statement/parser_statement.h"
 # include "parser/statement/statement_free.h"
@@ -65,7 +67,7 @@ static ast_statement_return_t* create_ast_statement_return(token_list_t* head)
     }
 }
 
-void* parse_return_statement_ast(token_list_t* head)
+ast_statement_t* parse_return_statement_ast(token_list_t* head, UNUSED const expr_pattern_t* expr_patt)
 {
     ast_statement_t* statement;
     ast_statement_return_t* rtn_statement;

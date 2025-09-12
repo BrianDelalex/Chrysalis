@@ -7,12 +7,9 @@
 **
 \*******************************************************************/
 
-#ifndef PARSER_EXPRESSION_H
-#define PARSER_EXPRESSION_H
+#ifndef ATTRIBUTES_H
+#define ATTRIBUTES_H
 
-# include "parser/expression/expression_patterns.h"
+# define UNUSED __attribute__((unused))
 
-ast_expr_t parse_integer_literal_expression(token_list_t* head);
-ast_expr_t parse_identifier_expression(token_list_t* head);
-ast_expr_t parse_operation_expression(token_list_t* head);
-#endif//!PARSER_EXPRESSION_H
+#endif//!ATTRIBUTES_H

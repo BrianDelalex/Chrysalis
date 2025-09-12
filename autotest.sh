@@ -51,7 +51,10 @@ echo "---- Compilation test stage2 ----"
 ./$TEST_COMPILE_SCRIPT $TEST_STAGE2_DIR gen_post_decl_assign_0 0
 ./$TEST_COMPILE_SCRIPT $TEST_STAGE2_DIR gen_post_decl_assign_42 42
 
-#echo "---- Compilation test stage3 ----"
-#./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_main_assign_var_to_var 10
+echo "---- Compilation test stage3 ----"
+./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_main_assign_var_to_var 10
+./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_simple_add 5
+./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_add3 6
+./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_big_add 66
 
 exit 0

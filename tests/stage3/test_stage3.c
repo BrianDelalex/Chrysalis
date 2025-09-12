@@ -27,10 +27,9 @@ void test_all_main_assign_var_to_var(void)
 {
     token_list_t* tokens = open_file_and_tokenize(SOURCE_FILES("main_assign_var_to_var.c"));
     TEST_ASSERT_NOT_NULL(tokens);
-    token_list_dump(tokens);
     ast_program_t* prg = create_ast_struct(tokens);
     TEST_ASSERT_NOT_NULL(prg);
-    //generator(prg, OUTPUT_ASM_FILE("gen_main_assign_var_to_var.asm"));
+    generator(prg, OUTPUT_ASM_FILE("gen_main_assign_var_to_var.asm"));
     token_list_free(tokens);
 }
 void test_all_simple_add(void);
@@ -38,9 +37,9 @@ void test_all_simple_add(void)
 {
     token_list_t* tokens = open_file_and_tokenize(SOURCE_FILES("simple_add.c"));
     TEST_ASSERT_NOT_NULL(tokens);
-    token_list_dump(tokens);
     ast_program_t* prg = create_ast_struct(tokens);
     TEST_ASSERT_NOT_NULL(prg);
+    generator(prg, OUTPUT_ASM_FILE("gen_simple_add.asm"));
     token_list_free(tokens);
 }
 
@@ -52,7 +51,7 @@ void test_all_add3(void)
     TEST_ASSERT_NOT_NULL(tokens);
     ast_program_t* prg = create_ast_struct(tokens);
     TEST_ASSERT_NOT_NULL(prg);
-    token_list_dump(tokens);
+    generator(prg, OUTPUT_ASM_FILE("gen_add3.asm"));
     token_list_free(tokens);
 }
 
@@ -61,7 +60,9 @@ void test_all_big_add(void)
 {
     token_list_t* tokens = open_file_and_tokenize(SOURCE_FILES("big_add.c"));
     TEST_ASSERT_NOT_NULL(tokens);
-    token_list_dump(tokens);
+    ast_program_t* prg = create_ast_struct(tokens);
+    TEST_ASSERT_NOT_NULL(prg);
+    generator(prg, OUTPUT_ASM_FILE("gen_big_add.asm"));
     token_list_free(tokens);
 }
 
@@ -70,7 +71,6 @@ void test_all_add_identifier(void)
 {
     token_list_t* tokens = open_file_and_tokenize(SOURCE_FILES("add_identifier.c"));
     TEST_ASSERT_NOT_NULL(tokens);
-    token_list_dump(tokens);
     token_list_free(tokens);
 }
 
@@ -79,7 +79,6 @@ void test_all_add_two_identifier(void)
 {
     token_list_t* tokens = open_file_and_tokenize(SOURCE_FILES("add_two_identifier.c"));
     TEST_ASSERT_NOT_NULL(tokens);
-    token_list_dump(tokens);
     token_list_free(tokens);
 }
 
@@ -88,6 +87,5 @@ void test_all_final_add(void)
 {
     token_list_t* tokens = open_file_and_tokenize(SOURCE_FILES("final_add.c"));
     TEST_ASSERT_NOT_NULL(tokens);
-    token_list_dump(tokens);
     token_list_free(tokens);
 }

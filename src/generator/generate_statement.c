@@ -15,10 +15,13 @@
 
 # include "generator/stack/stack.h"
 # include "generator/generator.h"
+# include "generator/asm/generate_asm.h"
 
 # include "utils/logging.h"
 
 static const char ASM_RET_STR[] = "    ret\n\n";
+
+char** generate_expression(char** lines, ast_expr_t* expr, ast_stack_t* stack, char** expr_str);
 
 static char** generate_return_statement(char** lines, ast_statement_t* statement, ast_stack_t* stack)
 {
@@ -34,34 +37,26 @@ static char** generate_return_statement(char** lines, ast_statement_t* statement
             free_lines(lines);
             return NULL;
         }
+        line = generate_asm_mov(reg, access_stack);
 
-        int line_size = snprintf(NULL, 0, RETURN_IDENTIFIER_STATEMENT, reg, access_stack);
-        line = malloc(sizeof(char) * (line_size + 1));
         if (!line) {
-            PERR(OUT_OF_MEM);
-            free_lines(lines);
-            return NULL;
-        }
-
-        if (snprintf(line, line_size + 1, RETURN_IDENTIFIER_STATEMENT, reg, access_stack) < 0) {
-            PERR("%s", strerror(errno));
             free(access_stack);
             free_lines(lines);
             return NULL;
         }
+
         free(access_stack);
     } else {
-        int value = ((ast_operand_integer_integral_t*)rtn_statement->expr.op.operand)->value;
-        int line_size = snprintf(NULL, 0, RETURN_INT_STATEMENT, value);
-        line = malloc(sizeof(char) * (line_size + 1));
-        if (!line) {
-            PERR(OUT_OF_MEM);
+        char* value;
+        lines = generate_expression(lines, &rtn_statement->expr, stack, &value);
+
+        if (!value) {
             free_lines(lines);
             return NULL;
         }
-
-        if (snprintf(line, line_size + 1, RETURN_INT_STATEMENT, value) < 0) {
-            PERR("%s", strerror(errno));
+        line = generate_asm_mov("rax", value);
+        if (!line) {
+            free(value);
             free_lines(lines);
             return NULL;
         }
@@ -83,27 +78,26 @@ static char** generate_assignment_statement(char** lines, ast_statement_t* state
 {
     ast_statement_assign_t* assign = (ast_statement_assign_t*) statement->statement;
     char* line;
+    char* access_stack = asm_string_access_stack(stack, assign->var.identifier);
+    char* right_op;
+    lines = generate_expression(lines, &assign->expr, stack, &right_op);
 
-    char* identifier = assign->var.identifier;
-    char* access_stack = asm_string_access_stack(stack, identifier);
-    int right_op = ((ast_operand_integer_integral_t*)assign->expr.op.operand)->value;
-
-    int line_size = snprintf(NULL, 0, ASSIGN_STATEMENT_INTEGER_LITERAL, access_stack, right_op);
-    line = malloc(sizeof(char) * (line_size + 1));
-    if (!line) {
-        PERR(OUT_OF_MEM);
+    if (!right_op) {
         free(access_stack);
-        free_lines(lines);
         return NULL;
     }
-    if (snprintf(line, line_size + 1, ASSIGN_STATEMENT_INTEGER_LITERAL, access_stack, right_op) < 0) {
-        PERR("%s", strerror(errno));
+
+    line = generate_asm_mov(access_stack, right_op);
+
+    if (!line) {
+        free(right_op);
         free(access_stack);
         free_lines(lines);
         return NULL;
     }
 
     free(access_stack);
+    free(right_op);
 
     lines = append_line(lines, line);
     CHECK_LINES_RETURN_NULL();
@@ -132,6 +126,9 @@ char** generate_statement(char** lines, ast_statement_t* statement, ast_stack_t*
                 free_lines(lines);
                 PERR("Unknow statement type. %d\n", ptr->type);
                 return NULL;
+        }
+        if (!lines) {
+            return NULL;
         }
         ptr = ptr->next;
     }

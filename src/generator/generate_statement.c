@@ -46,7 +46,7 @@ static char** generate_return_statement(char** lines, ast_statement_t* statement
         }
 
         free(access_stack);
-    } else {
+    } else if (rtn_statement->expr.op.type == OP_INTEGER_LITERAL) {
         char* value;
         lines = generate_expression(lines, &rtn_statement->expr, stack, &value);
 
@@ -60,10 +60,33 @@ static char** generate_return_statement(char** lines, ast_statement_t* statement
             free_lines(lines);
             return NULL;
         }
+    } else if (rtn_statement->expr.op.type == OP_OPERATION) {
+        char* value;
+        lines = generate_expression(lines, &rtn_statement->expr, stack, &value);
+        if (!value) {
+            return NULL;
+        }
+        if (strcmp(value, "eax") != 0) {
+            line = generate_asm_mov("eax", value);
+            if (!line) {
+                free(value);
+                free_lines(lines);
+                return NULL;
+            }
+        } else {
+            line = NULL;
+        }
+        free(value);
+    } else {
+        PERR("Unknow statement type: %d\n", rtn_statement->expr.op.type);
+        free_lines(lines);
+        return NULL;
     }
 
-    lines = append_line(lines, line);
-    CHECK_LINES_RETURN_NULL();
+    if (line) {
+        lines = append_line(lines, line);
+        CHECK_LINES_RETURN_NULL();
+    }
     lines = generate_stack_restore(lines);
     CHECK_LINES_RETURN_NULL();
     lines = append_line(lines, ASM_RET_STR);

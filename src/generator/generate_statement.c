@@ -55,8 +55,8 @@ static char** generate_return_statement(char** lines, ast_statement_t* statement
             return NULL;
         }
         line = generate_asm_mov("rax", value);
+        free(value);
         if (!line) {
-            free(value);
             free_lines(lines);
             return NULL;
         }

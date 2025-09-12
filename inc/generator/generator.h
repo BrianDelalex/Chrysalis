@@ -25,6 +25,8 @@
 
 # define ASM_MOV "    mov %s, %s\n"
 
+# define ASM_ADD "    add %s, %s\n"
+
 # define ASSIGN_STATEMENT_INTEGER_LITERAL "    mov %s, %d\n"
 
 #  define ASSIGN_STATEMENT "    mov %s, %s\n"

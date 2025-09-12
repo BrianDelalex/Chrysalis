@@ -56,5 +56,9 @@ echo "---- Compilation test stage3 ----"
 ./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_simple_add 5
 ./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_add3 6
 ./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_big_add 66
+./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_add_identifier 6
+./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_add_two_identifier 6
+./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_final_add 34
+./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_add_postdecl 22
 
 exit 0

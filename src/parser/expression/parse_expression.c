@@ -58,7 +58,6 @@ ast_expr_t parse_identifier_expression(token_list_t* head)
 
 ast_expr_t parse_operation_expression(token_list_t* head)
 {
-    //TODO - Find a way to parse operation correctly (Reverse polish notation...)
     ast_expr_t expr;
 
     memset(&expr, 0, sizeof(ast_expr_t));

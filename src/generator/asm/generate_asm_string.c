@@ -35,3 +35,12 @@ char* generate_integer_literal(int value)
 
     return op;
 }
+
+char *generate_asm_add(const char* to, const char*value)
+{
+    char *add;
+
+    GENERATE_STRING(add, ASM_ADD, to, value);
+
+    return add;
+}

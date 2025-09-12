@@ -31,6 +31,7 @@ rpn_double_chained_list_t* rpn_double_list_push_back(rpn_double_chained_list_t* 
 
     ptr->next = node;
     node->previous = ptr;
+    node->next = NULL;
 
     return head;
 }
@@ -39,6 +40,8 @@ rpn_double_chained_list_t* rpn_double_list_push_front(rpn_double_chained_list_t*
 {
     node->next = head;
     node->previous = NULL;
+    if (head)
+        head->previous = node;
 
     return node;
 }

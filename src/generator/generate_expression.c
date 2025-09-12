@@ -57,7 +57,7 @@ static char** generate_expr_identifier(char** lines, ast_operand_identifier_t* i
     return lines;
 }
 
-static char** generate_expr_operation(UNUSED char** lines, ast_operation_t* expr, UNUSED ast_stack_t* stack, UNUSED char**expr_str)
+static char** generate_expr_operation(UNUSED char** lines, ast_operation_t* expr, ast_stack_t* stack, UNUSED char**expr_str)
 {
     *expr_str = NULL;
     if (minimize_operation(expr) != 0) {
@@ -67,7 +67,48 @@ static char** generate_expr_operation(UNUSED char** lines, ast_operation_t* expr
 
     if (!expr->rpn_list->next) {
         *expr_str = generate_integer_literal(expr->rpn_list->data.value);
+        return lines;
     }
+
+    rpn_double_chained_list_t* operand1 = rpn_double_list_pop_front(&(expr->rpn_list));
+    char *operand1_asm_str;
+    if (operand1->token == OPERAND_INT) {
+        operand1_asm_str = generate_integer_literal(operand1->data.value);
+    } else {
+        operand1_asm_str = asm_string_access_stack(stack, operand1->data.identifier);
+    }
+    char *line = generate_asm_mov("eax", operand1_asm_str);
+    if (operand1->token == OPERAND_IDENTIFIER)
+        free(operand1->data.identifier);
+    free(operand1);
+    free(operand1_asm_str);
+    lines = append_line(lines, line);
+    free(line);
+    CHECK_LINES_RETURN_NULL();
+
+    while (expr->rpn_list) {
+        rpn_double_chained_list_t* operand2 = rpn_double_list_pop_front(&(expr->rpn_list));
+        rpn_double_chained_list_t* operator = rpn_double_list_pop_front(&(expr->rpn_list));
+        if (operator->token == OPERATOR && ((char)operator->data.value) == '+') {
+            char* operand2_asm_str;
+            if (operand2->token == OPERAND_INT) {
+                operand2_asm_str = generate_integer_literal(operand2->data.value);
+            } else {
+                operand2_asm_str = asm_string_access_stack(stack, operand2->data.identifier);
+            }
+            if (operand2->token == OPERAND_IDENTIFIER)
+                free(operand2->data.identifier);
+            free(operand2);
+            line = generate_asm_add("eax", operand2_asm_str);
+            free(operand2_asm_str);
+            lines = append_line(lines, line);
+            free(line);
+            CHECK_LINES_RETURN_NULL();
+        }
+        free(operator);
+    }
+    *expr_str = copy_string("eax");
+
     return lines;
 }
 

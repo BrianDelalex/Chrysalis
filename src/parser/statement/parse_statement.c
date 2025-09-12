@@ -8,7 +8,8 @@
 \*******************************************************************/
 
 # include "parser/ast_types.h"
-# include "parser/patterns.h"
+# include "parser/statement/statement_patterns.h"
+# include "parser/expression/expression_patterns.h"
 
 # include "utils/logging.h"
 
@@ -17,7 +18,8 @@
 ast_statement_t* parse_statement_ast(token_list_t** head)
 {
     token_list_t* head_save = *head;
-    const pattern_t* pattern = find_statement_pattern(head);
+    const expr_pattern_t* expr_patt = NULL;
+    const statement_pattern_t* pattern = find_statement_pattern(head, &expr_patt);
 
     if (!pattern) {
         PERR("Expected statement starting at:");
@@ -25,5 +27,5 @@ ast_statement_t* parse_statement_ast(token_list_t** head)
         return NULL;
     }
 
-    return pattern->ast_create(head_save);
+    return pattern->parse_ast(head_save, expr_patt);
 }

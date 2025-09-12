@@ -7,12 +7,11 @@
 **
 \*******************************************************************/
 
-#ifndef PARSER_EXPRESSION_H
-#define PARSER_EXPRESSION_H
+#ifndef OPERATION_H
+#define OPERATION_H
 
-# include "parser/expression/expression_patterns.h"
+typedef struct ast_operation_s ast_operation_t;
 
-ast_expr_t parse_integer_literal_expression(token_list_t* head);
-ast_expr_t parse_identifier_expression(token_list_t* head);
-ast_expr_t parse_operation_expression(token_list_t* head);
-#endif//!PARSER_EXPRESSION_H
+int minimize_operation(ast_operation_t* op);
+
+#endif//!OPERATION_H

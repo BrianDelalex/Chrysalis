@@ -22,8 +22,11 @@ const char* token_type_str[] = {
     "IDENTIFIER",
     "INTEGER_LITERAL",
     "EQUAL",
+    "PLUS",
     "UNKNOW",
 };
+
+_Static_assert((sizeof(token_type_str) / sizeof(const char*)) == UNKNOW + 1, "Error token_type_str missing value.");
 
 token_list_t* token_list_create_node(token_list_t* head, token_type_t type, char* value)
 {

@@ -17,7 +17,8 @@
 typedef enum {
     TOKEN_EXPR = EXTENDED_TOKEN_TYPES_START,
     TOKEN_RETURN,
-    TOKEN_TYPE
+    TOKEN_TYPE,
+    TOKEN_OPERATION
 }token_type_ext_t;
 
 # define GET_TOKEN_COUNT(tokens) sizeof(tokens) / sizeof(int)
@@ -38,6 +39,5 @@ typedef struct pattern_s {
 }pattern_t;
 
 const pattern_t* find_function_pattern(token_list_t* head);
-const pattern_t* find_statement_pattern(token_list_t** head);
 
 #endif//!PATTERNS_H

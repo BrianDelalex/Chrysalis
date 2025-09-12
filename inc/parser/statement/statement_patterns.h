@@ -11,23 +11,32 @@
 #define STATEMENT_PATTERNS_H
 
 # include "parser/patterns.h"
+# include "parser/ast_types.h"
 
 # include <stddef.h>
 # include <stdio.h>
 
-void* parse_return_statement_ast(token_list_t* head);
+typedef struct expr_pattern_s expr_pattern_t;
 
+typedef struct statement_pattern_s {
+    const int *tokens;
+    int token_count;
+    ast_statement_t* (*parse_ast)(token_list_t*, const expr_pattern_t*);
+}statement_pattern_t;
+
+
+const statement_pattern_t* find_statement_pattern(token_list_t** head, const expr_pattern_t** pattern);
 
 extern const int STATEMENT_RET_EXPR_TOKENS[];
-extern const pattern_t STATEMENT_RET_EXPR;
+extern const statement_pattern_t STATEMENT_RET_EXPR;
 
 extern const int STATEMENT_VAR_DECL_TOKENS[];
-extern const pattern_t STATEMENT_VAR_DECL;
+extern const statement_pattern_t STATEMENT_VAR_DECL;
 
 extern const int STATEMENT_VAR_DECL_ASSIGN_TOKENS[];
-extern const pattern_t STATEMENT_VAR_DECL_ASSIGN;
+extern const statement_pattern_t STATEMENT_VAR_DECL_ASSIGN;
 
-extern const pattern_t STATEMENT_PATTERNS[];
+extern const statement_pattern_t STATEMENT_PATTERNS[];
 extern const unsigned int STATEMENT_PATTERNS_SIZE;
 
 #endif//!STATEMENT_PATTERNS_H

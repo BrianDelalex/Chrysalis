@@ -21,11 +21,15 @@
 
 # define LABEL_STR_SIZE(lbl_name) (strlen(LABEL_STR) + strlen(lbl_name) - 1)
 
-# define RETURN_INT_STATEMENT "    mov rax, %d\n"
+# define ASM_MOV_INTO_RAX "    mov rax, %d\n"
 
-# define RETURN_IDENTIFIER_STATEMENT "    mov %s, %s\n"
+# define ASM_MOV "    mov %s, %s\n"
+
+# define ASM_ADD "    add %s, %s\n"
 
 # define ASSIGN_STATEMENT_INTEGER_LITERAL "    mov %s, %d\n"
+
+#  define ASSIGN_STATEMENT "    mov %s, %s\n"
 
 int generator(ast_program_t* program, const char* target);
 

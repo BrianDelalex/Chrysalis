@@ -8,52 +8,68 @@
 \*******************************************************************/
 
 # include <stdlib.h>
+# include <string.h>
 
 # include "parser/ast_types.h"
 
+# include "parser/operation/ast_operation.h"
 # include "parser/expression/parser_expression.h"
 
 # include "utils/logging.h"
 # include "utils/string_manipulation.h"
 
-int parse_ast_expression(token_list_t **head, ast_expr_t* expr)
+ast_expr_t parse_integer_literal_expression(token_list_t* head)
 {
-    token_list_t* ptr = *head;
+    ast_expr_t expr;
 
-    while (ptr && ptr->token.type != SEMICOLON) {
-        switch (ptr->token.type) {
-        case INTEGER_LITERAL:
-        {
-            ast_operand_integer_integral_t* op = malloc(sizeof(ast_operand_integer_integral_t));
-            if (!op) {
-                PERR(OUT_OF_MEM);
-                return -1;
-            }
-            op->value = atoi(ptr->token.value);
-            expr->op.type = OP_INTEGER_LITERAL;
-            expr->op.operand = (void*) op;
-            break;
-        }
-        case IDENTIFIER:
-        {
-            ast_operand_identifier_t* op = malloc(sizeof(ast_operand_identifier_t));
-            if (!op) {
-                PERR(OUT_OF_MEM);
-                return -1;
-            }
-            op->identifier = copy_string(ptr->token.value);
-            if (!op->identifier)
-                return -1;
-            expr->op.type = OP_IDENTIFIER;
-            expr->op.operand = (void*) op;
-            break;
-        }
-        default:
-            return -1;
-        }
-        ptr = ptr->next;
+    memset(&expr, 0, sizeof(ast_expr_t));
+
+    ast_operand_integer_integral_t* op = malloc(sizeof(ast_operand_integer_integral_t));
+    if (!op) {
+        PERR(OUT_OF_MEM);
+        return expr;
     }
+    op->value = atoi(head->token.value);
+    expr.op.type = OP_INTEGER_LITERAL;
+    expr.op.operand = (void*) op;
 
-    *head = ptr;
-    return 0;
+    return expr;
+}
+
+ast_expr_t parse_identifier_expression(token_list_t* head)
+{
+    ast_expr_t expr;
+
+    memset(&expr, 0, sizeof(ast_expr_t));
+
+    ast_operand_identifier_t* op = malloc(sizeof(ast_operand_identifier_t));
+    if (!op) {
+        PERR(OUT_OF_MEM);
+        return expr;
+    }
+    op->identifier = copy_string(head->token.value);
+    if (!op->identifier)
+        return expr;
+    expr.op.type = OP_IDENTIFIER;
+    expr.op.operand = (void*) op;
+
+    return expr;
+}
+
+ast_expr_t parse_operation_expression(token_list_t* head)
+{
+    ast_expr_t expr;
+
+    memset(&expr, 0, sizeof(ast_expr_t));
+
+    ast_operation_t* operation = malloc(sizeof(ast_operation_t));
+    if (!operation ) {
+        PERR(OUT_OF_MEM);
+        return expr;
+    }
+    operation->rpn_list = token_list_to_rpn(head);
+
+    expr.op.type = OP_OPERATION;
+    expr.op.operand = (void*)operation;
+    return expr;
 }

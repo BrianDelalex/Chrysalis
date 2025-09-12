@@ -7,12 +7,11 @@
 **
 \*******************************************************************/
 
-#ifndef PARSER_EXPRESSION_H
-#define PARSER_EXPRESSION_H
+#ifndef STAGE3_H
+#define STAGE3_H
 
-# include "parser/expression/expression_patterns.h"
+# define SOURCE_FILES(file) STAGE3_DIR "/source_files/" file
 
-ast_expr_t parse_integer_literal_expression(token_list_t* head);
-ast_expr_t parse_identifier_expression(token_list_t* head);
-ast_expr_t parse_operation_expression(token_list_t* head);
-#endif//!PARSER_EXPRESSION_H
+# define OUTPUT_ASM_FILE(file) STAGE3_DIR "/output_files/" file
+
+#endif//STAGE3_H

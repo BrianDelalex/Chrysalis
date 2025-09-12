@@ -18,17 +18,21 @@
 
 static rpn_double_chained_list_t* parse_operation_operand(token_list_t* token)
 {
+    union_identifier_value_t un;
     if (token->token.type == IDENTIFIER) {
-        return rpn_create_node(OPERAND_IDENTIFIER, token->token.value);
+        un.identifier = token->token.value;
+        return rpn_create_node(OPERAND_IDENTIFIER, un);
     } else if (token->token.type == INTEGER_LITERAL) {
-        return rpn_create_node(OPERAND_INT, token->token.value);
+        un.value = atoi(token->token.value);
+        return rpn_create_node(OPERAND_INT, un);
     }
     return NULL;
 }
 
 static rpn_double_chained_list_t* parse_operation_type(UNUSED token_list_t* token)
 {
-    return rpn_create_node(OPERATOR, "+");
+    union_identifier_value_t un = {.value = (uint64_t) '+' };
+    return rpn_create_node(OPERATOR, un);
 }
 
 rpn_double_chained_list_t* token_list_to_rpn(token_list_t* head)

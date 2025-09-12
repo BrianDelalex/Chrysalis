@@ -43,12 +43,27 @@ rpn_double_chained_list_t* rpn_double_list_push_front(rpn_double_chained_list_t*
     return node;
 }
 
+rpn_double_chained_list_t* rpn_double_list_pop_front(rpn_double_chained_list_t** head)
+{
+    rpn_double_chained_list_t* node;
+    if (!(*head))
+        return NULL;
+    node = *head;
+    *head = (*head)->next;
+    if (*head)
+        (*head)->previous = NULL;
+    node->next = NULL;
+    node->previous = NULL;
+    return node;
+}
+
 void rpn_double_list_free(rpn_double_chained_list_t* head)
 {
     rpn_double_chained_list_t* ptr = head;
 
     while (ptr) {
-        free(ptr->value);
+        if (ptr->token == OPERAND_IDENTIFIER)
+            free(ptr->data.identifier);
         head = ptr->next;
         free(ptr);
         ptr = head;
@@ -58,13 +73,18 @@ void rpn_double_list_free(rpn_double_chained_list_t* head)
 void rpn_double_list_dump(rpn_double_chained_list_t* head)
 {
     while (head) {
-        printf("%s ", head->value);
+        if (head->token == OPERAND_IDENTIFIER)
+            printf("%s ", head->data.identifier);
+        else if (head->token == OPERAND_INT)
+            printf("%ld ", head->data.value);
+        else if (head->token == OPERATOR)
+            printf("%c ", (char) head->data.value);
         head = head->next;
     }
     printf("\n");
 }
 
-rpn_double_chained_list_t* rpn_create_node(RPN_TOKEN token, const char* value)
+rpn_double_chained_list_t* rpn_create_node(RPN_TOKEN token, union_identifier_value_t _union)
 {
     rpn_double_chained_list_t* node = malloc(sizeof(rpn_double_chained_list_t));
 
@@ -74,10 +94,16 @@ rpn_double_chained_list_t* rpn_create_node(RPN_TOKEN token, const char* value)
     }
     memset(node, 0, sizeof(rpn_double_chained_list_t));
     node->token = token;
-    node->value = copy_string(value);
-    if (!node->value) {
-        free(node);
-        return NULL;
+    if (token == OPERAND_IDENTIFIER) {
+        node->data.identifier = copy_string(_union.identifier);
+        if (!node->data.identifier) {
+            free(node);
+            return NULL;
+        }
+    } else if (token == OPERAND_INT) {
+        node->data.value = _union.value;
+    } else if (token == OPERATOR) {
+        node->data.value = _union.value;
     }
     return node;
 }

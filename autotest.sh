@@ -65,5 +65,6 @@ echo "---- Compilation test stage3 ----"
 ./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_return_add3 6
 ./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_return_add_identifier 6
 ./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_return_add_two_identifier 6
+./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_return_final_add 34
 
 exit 0

@@ -166,3 +166,15 @@ void test_all_return_add_two_identifier(void)
     token_list_free(tokens);
     ast_program_free(prg);
 }
+
+void test_all_return_final_add(void);
+void test_all_return_final_add(void)
+{
+    token_list_t* tokens = open_file_and_tokenize(SOURCE_FILES("return_final_add.c"));
+    TEST_ASSERT_NOT_NULL(tokens);
+    ast_program_t* prg = create_ast_struct(tokens);
+    TEST_ASSERT_NOT_NULL(prg);
+    generator(prg, OUTPUT_ASM_FILE("gen_return_final_add.asm"));
+    token_list_free(tokens);
+    ast_program_free(prg);
+}

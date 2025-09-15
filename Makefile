@@ -37,6 +37,7 @@ SOURCE_DIRS :=	$(PROJECT_ROOT_DIR)/src/tokenizer	\
 				$(PROJECT_ROOT_DIR)/src/generator/stack		\
 				$(PROJECT_ROOT_DIR)/src/generator/asm		\
 				$(PROJECT_ROOT_DIR)/src/generator/operation	\
+				$(PROJECT_ROOT_DIR)/src/generator/statement	\
 
 SOURCE_FILES := $(wildcard $(addsuffix /*.c, $(SOURCE_DIRS)))
 

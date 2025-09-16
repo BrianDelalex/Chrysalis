@@ -40,8 +40,6 @@ bool generate_start_function(gen_data_t* gen_data)
 bool generate_function(gen_data_t* gen_data, ast_function_t* func)
 {
     gen_func_data_t func_data;
-    int global_lbl_size = GLOBAL_LABEL_STR_SIZE(func->name);
-    int lbl_size = LABEL_STR_SIZE(func->name);
     char *global_lbl;
     char *lbl;
 
@@ -49,14 +47,8 @@ bool generate_function(gen_data_t* gen_data, ast_function_t* func)
         g_main_found = true;
     }
 
-    global_lbl = malloc(sizeof(char) * global_lbl_size);
+    global_lbl = generate_global_label(func->name);
     if (!global_lbl) {
-        PERR(OUT_OF_MEM);
-        return false;
-    }
-    if (snprintf(global_lbl, global_lbl_size, GLOBAL_LABEL_STR, func->name) < 0) {
-        PERR("%s\n", strerror((errno)));
-        free(global_lbl);
         return false;
     }
 
@@ -66,14 +58,8 @@ bool generate_function(gen_data_t* gen_data, ast_function_t* func)
     }
     free(global_lbl);
 
-    lbl = malloc(sizeof(char) * lbl_size);
+    lbl = generate_label_beginning(func->name);
     if (!lbl) {
-        PERR(OUT_OF_MEM);
-        return false;
-    }
-    if (snprintf(lbl, lbl_size, LABEL_STR, func->name) < 0) {
-        PERR("%s\n", strerror(errno));
-        free(lbl);
         return false;
     }
 

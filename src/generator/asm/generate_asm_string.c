@@ -17,6 +17,23 @@
 # include "utils/logging.h"
 # include "utils/string_manipulation.h"
 
+char* generate_global_label(const char* lbl_name)
+{
+    char* lbl;
+
+    GENERATE_STRING(lbl, GLOBAL_LABEL_STR, lbl_name);
+
+    return lbl;
+}
+
+char* generate_label_beginning(const char* lbl_name)
+{
+    char* lbl;
+
+    GENERATE_STRING(lbl, LABEL_STR, lbl_name);
+
+    return lbl;
+}
 
 char* generate_asm_mov(const char* to, const char* from)
 {

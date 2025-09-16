@@ -12,11 +12,7 @@
 
 # define GLOBAL_LABEL_STR "global %s\n"
 
-# define GLOBAL_LABEL_STR_SIZE(lbl_name) (strlen(GLOBAL_LABEL_STR) + strlen(lbl_name) - 1)
-
 # define LABEL_STR "%s:\n"
-
-# define LABEL_STR_SIZE(lbl_name) (strlen(LABEL_STR) + strlen(lbl_name) - 1)
 
 # define ASM_MOV_INTO_RAX "    mov rax, %d\n"
 

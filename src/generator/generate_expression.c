@@ -19,6 +19,7 @@
 # include "generator/generator.h"
 # include "generator/asm/generate_asm.h"
 # include "generator/operation/operation.h"
+# include "generator/statement.h"
 
 # include "utils/logging.h"
 # include "utils/string_manipulation.h"
@@ -39,35 +40,38 @@ static char* generate_expr_integer_literal(ast_operand_integer_integral_t* opera
 /*
  * Create asm instruction to put the value of 'identifier' into accumulator register and return accumulator register name in expr_str.
  */
-static char** generate_expr_identifier(char** lines, ast_operand_identifier_t* identifier, ast_stack_t* stack, char** expr_str)
+static bool generate_expr_identifier(gen_func_data_t* data, ast_operand_identifier_t* identifier, char** expr_str)
 {
-    char* access_stack = asm_string_access_stack(stack, identifier->identifier);
-    const char* reg = ast_get_accumulator_register_from_size(stack, identifier->identifier);
+    char* access_stack = asm_string_access_stack(data->stack, identifier->identifier);
+    const char* reg = ast_get_accumulator_register_from_size(data->stack, identifier->identifier);
     char* line = generate_asm_mov(reg, access_stack);
 
     if (!line) {
         free(access_stack);
-        return NULL;
+        return false;
     }
 
     free(access_stack);
-    lines = append_line(lines, line);
+    if (!append_line_to_file(data->gen_data, line)) {
+        free(line);
+        return false;
+    }
     free(line);
     *expr_str = copy_string(reg);
-    return lines;
+    return true;
 }
 
-static char** generate_expr_operation(UNUSED char** lines, ast_operation_t* expr, ast_stack_t* stack, UNUSED char**expr_str)
+static bool generate_expr_operation(gen_func_data_t* data, ast_operation_t* expr, char**expr_str)
 {
     *expr_str = NULL;
     if (minimize_operation(expr) != 0) {
         PERR("Error while minimizing operation.\n");
-        return NULL;
+        return false;
     }
 
     if (!expr->rpn_list->next) {
         *expr_str = generate_integer_literal(expr->rpn_list->data.value);
-        return lines;
+        return true;
     }
 
     rpn_double_chained_list_t* operand1 = rpn_double_list_pop_front(&(expr->rpn_list));
@@ -75,16 +79,18 @@ static char** generate_expr_operation(UNUSED char** lines, ast_operation_t* expr
     if (operand1->token == OPERAND_INT) {
         operand1_asm_str = generate_integer_literal(operand1->data.value);
     } else {
-        operand1_asm_str = asm_string_access_stack(stack, operand1->data.identifier);
+        operand1_asm_str = asm_string_access_stack(data->stack, operand1->data.identifier);
     }
     char *line = generate_asm_mov("eax", operand1_asm_str);
     if (operand1->token == OPERAND_IDENTIFIER)
         free(operand1->data.identifier);
     free(operand1);
     free(operand1_asm_str);
-    lines = append_line(lines, line);
+    if (!append_line_to_file(data->gen_data, line)) {
+        free(line);
+        return false;
+    }
     free(line);
-    CHECK_LINES_RETURN_NULL();
 
     while (expr->rpn_list) {
         rpn_double_chained_list_t* operand2 = rpn_double_list_pop_front(&(expr->rpn_list));
@@ -94,35 +100,36 @@ static char** generate_expr_operation(UNUSED char** lines, ast_operation_t* expr
             if (operand2->token == OPERAND_INT) {
                 operand2_asm_str = generate_integer_literal(operand2->data.value);
             } else {
-                operand2_asm_str = asm_string_access_stack(stack, operand2->data.identifier);
+                operand2_asm_str = asm_string_access_stack(data->stack, operand2->data.identifier);
             }
             if (operand2->token == OPERAND_IDENTIFIER)
                 free(operand2->data.identifier);
             free(operand2);
             line = generate_asm_add("eax", operand2_asm_str);
             free(operand2_asm_str);
-            lines = append_line(lines, line);
-            free(line);
-            CHECK_LINES_RETURN_NULL();
+            if (!append_line_to_file(data->gen_data, line)) {
+                free(line);
+                return false;
+            }
         }
         free(operator);
     }
     *expr_str = copy_string("eax");
 
-    return lines;
+    return true;
 }
 
-char** generate_expression(char** lines, ast_expr_t* expr, ast_stack_t* stack, char** expr_str);
-char** generate_expression(char** lines, ast_expr_t* expr, ast_stack_t* stack, char** expr_str)
+bool generate_expression(gen_func_data_t* data, ast_expr_t* expr, char** expr_str);
+bool generate_expression(gen_func_data_t* data, ast_expr_t* expr, char** expr_str)
 {
     switch (expr->op.type) {
     case OP_IDENTIFIER:
-        return generate_expr_identifier(lines, ((ast_operand_identifier_t*)expr->op.operand), stack, expr_str);
+        return generate_expr_identifier(data, ((ast_operand_identifier_t*)expr->op.operand), expr_str);
     case OP_INTEGER_LITERAL:
         *expr_str = generate_expr_integer_literal((ast_operand_integer_integral_t*)expr->op.operand);
-        return lines;
+        return (*expr_str != NULL);
     case OP_OPERATION:
-        return generate_expr_operation(lines, ((ast_operation_t*)expr->op.operand), stack, expr_str);
+        return generate_expr_operation(data, ((ast_operation_t*)expr->op.operand), expr_str);
         break;
     default:
         PERR("Unexpected operation type: %d\n", expr->op.type);

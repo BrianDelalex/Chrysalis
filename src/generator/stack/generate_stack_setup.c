@@ -10,16 +10,14 @@
 # include "generator/generator.h"
 # include "generator/stack/stack.h"
 
-char** generate_stack_setup(char** lines)
+bool generate_stack_setup(gen_data_t* gen_data)
 {
     const char *push_rbp = "    push rbp\n    mov rbp, rsp\n\n";
-    lines = append_line(lines, push_rbp);
-    return lines;
+    return append_line_to_file(gen_data, push_rbp);
 }
 
-char** generate_stack_restore(char** lines)
+bool generate_stack_restore(gen_data_t* gen_data)
 {
     const char *pop_rbp = "    mov rsp, rbp\n    pop rbp\n";
-    lines = append_line(lines, pop_rbp);
-    return lines;
+    return append_line_to_file(gen_data, pop_rbp);
 }

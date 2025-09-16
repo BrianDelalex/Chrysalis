@@ -111,6 +111,7 @@ static bool generate_expr_operation(gen_func_data_t* data, ast_operation_t* expr
                 free(line);
                 return false;
             }
+            free(line);
         }
         free(operator);
     }

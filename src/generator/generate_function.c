@@ -23,24 +23,15 @@ extern bool g_main_found;
 
 bool generate_start_function(gen_data_t* gen_data)
 {
-    const char global_start[] = "global _start\n\n";
-    const char start_lbl[] = "_start:\n";
-    const char call_main[] = "    call main\n";
-    const char mov_rdi_rax[]= "    mov rdi, rax\n";
-    const char mov_rax_exit[] = "    mov rax, 60\n";
-    const char syscall[] = "    syscall\n";
+    const char start_func[] =
+        "global _start\n\n"     \
+        "_start:\n"             \
+        "    call main\n"       \
+        "    mov rdi, rax\n"    \
+        "    mov rax, 60\n"     \
+        "    syscall\n";
 
-    if (!append_line_to_file(gen_data, global_start))
-        return false;
-    if (!append_line_to_file(gen_data, start_lbl))
-        return false;
-    if (!append_line_to_file(gen_data, call_main))
-        return false;
-    if (!append_line_to_file(gen_data, mov_rdi_rax))
-        return false;
-    if (!append_line_to_file(gen_data, mov_rax_exit))
-        return false;
-    if (!append_line_to_file(gen_data, syscall))
+    if (!append_line_to_file(gen_data, start_func))
         return false;
 
     return true;

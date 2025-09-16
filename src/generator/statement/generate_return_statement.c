@@ -9,110 +9,120 @@
 
 # include <stdlib.h>
 
-# include "generator/generator.h"
 # include "generator/expression.h"
 # include "generator/stack/stack.h"
 # include "generator/asm/generate_asm.h"
 # include "generator/statement.h"
 
 # include "utils/logging.h"
+# include "utils/string_array.h"
 
 static const char ASM_RET_STR[] = "    ret\n\n";
 
-static char** generate_return_statement_identifier(char** lines, ast_statement_return_t* statement, ast_stack_t* stack, char** line)
+static bool generate_return_statement_identifier(gen_func_data_t* data, ast_statement_return_t* statement)
 {
     char* identifier = ((ast_operand_identifier_t*)statement->expr.op.operand)->identifier;
-    char* access_stack = asm_string_access_stack(stack, identifier);
-    const char* reg = ast_get_accumulator_register_from_size(stack, identifier);
+    char* access_stack = asm_string_access_stack(data->stack, identifier);
+    char** file = data->gen_data->file;
+    char* line;
+    const char* reg = ast_get_accumulator_register_from_size(data->stack, identifier);
 
     if (!access_stack) {
-        free_lines(lines);
-        return NULL;
+        string_array_free(file);
+        return false;
     }
 
-    *line = generate_asm_mov(reg, access_stack);
-    if (!(*line)) {
+    line = generate_asm_mov(reg, access_stack);
+    if (!line) {
         free(access_stack);
-        free_lines(lines);
-        return NULL;
+        string_array_free(file);
+        return false;
     }
     free(access_stack);
-    return lines;
+
+    bool status = append_line_to_file(data->gen_data, line);
+    free(line);
+    return status;
 }
 
-static char** generate_return_statement_int_literal(char** lines, ast_statement_return_t* statement, ast_stack_t* stack, char** line)
+static bool generate_return_statement_int_literal(gen_func_data_t* data, ast_statement_return_t* statement)
 {
     char* value;
-    lines = generate_expression(lines, &statement->expr, stack, &value);
-
-    if (!value) {
-        free_lines(lines);
-        return NULL;
+    char* line;
+    if (!generate_expression(data, &statement->expr, &value)) {
+        return false;
     }
 
-    *line = generate_asm_mov("rax", value);
+    if (!value) {
+        string_array_free(data->gen_data->file);
+        return false;
+    }
+
+    line = generate_asm_mov("rax", value);
     free(value);
-    if (!(*line)) {
-        free_lines(lines);
-        return NULL;
+    if (!line) {
+        string_array_free(data->gen_data->file);
+        return false;
     }
-    return lines;
+
+    bool status = append_line_to_file(data->gen_data, line);
+    free(line);
+    return status;
 }
 
-static char** generate_return_statement_operation(char** lines, ast_statement_return_t* statement, ast_stack_t* stack, char** line)
+static bool generate_return_statement_operation(gen_func_data_t* data, ast_statement_return_t* statement)
 {
+    char* line;
     char* value;
-    lines = generate_expression(lines, &statement->expr, stack, &value);
+    bool status = true;
+    if (!generate_expression(data, &statement->expr, &value)) {
+        return false;
+    }
     if (!value) {
-        return NULL;
+        return false;
     }
 
     if (strcmp(value, "eax") != 0) {
-        *line = generate_asm_mov("eax", value);
-        if (!(*line)) {
+        line = generate_asm_mov("eax", value);
+        if (!line) {
             free(value);
-            free_lines(lines);
+            string_array_free(data->gen_data->file);
             return NULL;
         }
-    } else {
-        *line = NULL;
+        status = append_line_to_file(data->gen_data, line);
+        free(line);
     }
     free(value);
-    return lines;
+    return status;
 }
 
-char** generate_return_statement(char** lines, ast_statement_t* statement, ast_stack_t* stack)
+bool generate_return_statement(gen_func_data_t* data, ast_statement_t* statement)
 {
     ast_statement_return_t *rtn_statement = (ast_statement_return_t*) statement->statement;
-    char* line;
 
     switch (rtn_statement->expr.op.type) {
     case OP_IDENTIFIER:
-        lines = generate_return_statement_identifier(lines, rtn_statement, stack, &line);
+         if (!generate_return_statement_identifier(data, rtn_statement))
+            return false;
         break;
     case OP_INTEGER_LITERAL:
-        lines = generate_return_statement_int_literal(lines, rtn_statement, stack, &line);
+        if (!generate_return_statement_int_literal(data, rtn_statement))
+            return false;
         break;
     case OP_OPERATION:
-        lines = generate_return_statement_operation(lines, rtn_statement, stack, &line);
+        if (!generate_return_statement_operation(data, rtn_statement))
+            return false;
         break;
     default:
         PERR("Unknow statement type: %d\n", rtn_statement->expr.op.type);
-        free_lines(lines);
-        return NULL;
+        string_array_free(data->gen_data->file);
+        return false;
     }
-    CHECK_LINES_RETURN_NULL();
 
-    if (line) {
-        lines = append_line(lines, line);
-        CHECK_LINES_RETURN_NULL();
-    }
-    lines = generate_stack_restore(lines);
-    CHECK_LINES_RETURN_NULL();
-    lines = append_line(lines, ASM_RET_STR);
-    CHECK_LINES_RETURN_NULL();
+    if (!generate_stack_restore(data->gen_data))
+        return false;
+    if (!append_line_to_file(data->gen_data, ASM_RET_STR))
+        return false;
 
-    free(line);
-
-    return lines;
+    return true;
 }

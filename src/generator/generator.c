@@ -7,149 +7,49 @@
 **
 \*******************************************************************/
 
-# include "parser/ast_types.h"
+# include <stdlib.h>
+# include <stdbool.h>
 
 # include "generator/generator.h"
-# include "generator/stack/stack.h"
+# include "generator/function.h"
 
 # include "files/files.h"
 
 # include "utils/logging.h"
-
-# include <stdlib.h>
-# include <string.h>
-# include <stdbool.h>
-# include <errno.h>
+# include "utils/string_array.h"
 
 bool g_main_found = false;
 
-int count_lines(char** lines)
+bool append_line_to_file(gen_data_t* gen_data, const char* line)
 {
-    int count = 0;
-
-    for (; lines[count]; count++);
-    return count;
-}
-
-void free_lines(char **lines)
-{
-    for (int i = 0; lines[i]; i++) {
-        free(lines[i]);
-    }
-    free(lines);
-}
-
-char** append_line(char** lines, const char* line)
-{
-    char *new_line;
-    int lines_count = count_lines(lines);
-
-    lines = realloc(lines, sizeof(char*) * (lines_count + 2));
-    if (!lines) {
-        PERR("Out of memory!\n");
-        return NULL;
-    }
-    new_line = malloc(sizeof(char) * (strlen(line) + 1));
-    if (!new_line) {
-        PERR("Out of memory!\n");
-        free(lines);
-        return NULL;
-    }
-    memcpy(new_line, line, strlen(line) + 1);
-    lines[lines_count] = new_line;
-    lines[lines_count + 1] = NULL;
-
-    return lines;
-}
-
-
-
-static char** generate_start_function(char** lines)
-{
-    const char global_start[] = "global _start\n\n";
-    const char start_lbl[] = "_start:\n";
-    const char call_main[] = "    call main\n";
-    const char mov_rdi_rax[]= "    mov rdi, rax\n";
-    const char mov_rax_exit[] = "    mov rax, 60\n";
-    const char syscall[] = "    syscall\n";
-
-    lines = append_line(lines, global_start);
-    CHECK_LINES_RETURN_NULL();
-    lines = append_line(lines, start_lbl);
-    CHECK_LINES_RETURN_NULL();
-    lines = append_line(lines, call_main);
-    CHECK_LINES_RETURN_NULL();
-    lines = append_line(lines, mov_rdi_rax);
-    CHECK_LINES_RETURN_NULL();
-    lines = append_line(lines, mov_rax_exit);
-    CHECK_LINES_RETURN_NULL();
-    lines = append_line(lines, syscall);
-    CHECK_LINES_RETURN_NULL();
-
-    return lines;
-}
-
-static char** generate_function(char** lines, ast_function_t* func)
-{
-    int global_lbl_size = GLOBAL_LABEL_STR_SIZE(func->name);
-    int lbl_size = LABEL_STR_SIZE(func->name);
-    char *global_lbl;
-    char *lbl;
-
-    if (strcmp("main", func->name) == 0) {
-        g_main_found = true;
-    }
-
-    global_lbl = malloc(sizeof(char) * global_lbl_size);
-    if (!global_lbl) {
-        PERR(OUT_OF_MEM);
-        return NULL;
-    }
-    if (snprintf(global_lbl, global_lbl_size, GLOBAL_LABEL_STR, func->name) < 0) {
-        PERR("%s\n", strerror((errno)));
-        free(global_lbl);
-        return NULL;
-    }
-
-    lines = append_line(lines, global_lbl);
-    CHECK_LINES_RETURN_NULL();
-    free(global_lbl);
-
-    lbl = malloc(sizeof(char) * lbl_size);
-    if (!lbl) {
-        PERR(OUT_OF_MEM);
-        return NULL;
-    }
-    if (snprintf(lbl, lbl_size, LABEL_STR, func->name) < 0) {
-        PERR("%s\n", strerror(errno));
-        free(lbl);
-        return NULL;
-    }
-
-    lines = append_line(lines, lbl);
-    CHECK_LINES_RETURN_NULL();
-    free(lbl);
-    lines = generate_stack_setup(lines);
-    CHECK_LINES_RETURN_NULL();
-
-    return generate_statement(lines, func->statements, func->stack);
+    gen_data->file = string_array_append(gen_data->file, line);
+    if (!gen_data->file)
+        return false;
+    return true;
 }
 
 int generator(ast_program_t* program, const char* target)
 {
-    char** lines = malloc(sizeof(char*));
-    lines[0] = NULL;
-    g_main_found = false;
+    gen_data_t gen_data;
 
-    lines = generate_function(lines, program->functions);
-    CHECK_LINES_RETURN(-1);
-
-    if (g_main_found) {
-        lines = generate_start_function(lines);
-        CHECK_LINES_RETURN(-1);
+    gen_data.file = malloc(sizeof(char*));
+    if (!gen_data.file) {
+        PERR(OUT_OF_MEM);
+        return -1;
     }
 
-    write_file(target, lines);
-    free_lines(lines);
+    gen_data.file[0] = NULL;
+    g_main_found = false;
+
+    if (!generate_function(&gen_data, program->functions))
+        return -1;
+
+    if (g_main_found) {
+        if (!generate_start_function(&gen_data))
+            return -1;
+    }
+
+    write_file(target, gen_data.file);
+    string_array_free(gen_data.file);
     return 0;
 }

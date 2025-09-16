@@ -10,6 +10,8 @@
 #ifndef GENERATE_ASM_H
 #define GENERATE_ASM_H
 
+# include "generator/asm/constant.h"
+
 # define GENERATE_STRING(str, fmt, args...)  \
     int _size = snprintf(NULL, 0, fmt, ## args);        \
     str = malloc(sizeof(char) * (_size + 1));           \

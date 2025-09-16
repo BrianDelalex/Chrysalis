@@ -15,17 +15,17 @@
 # include "generator/expression.h"
 # include "generator/statement.h"
 
-char** generate_assignment_statement(char** lines, ast_statement_t* statement, ast_stack_t* stack)
+# include "utils/string_array.h"
+
+bool generate_assignment_statement(gen_func_data_t* data, ast_statement_t* statement)
 {
     ast_statement_assign_t* assign = (ast_statement_assign_t*) statement->statement;
     char* line;
-    char* access_stack = asm_string_access_stack(stack, assign->var.identifier);
+    char* access_stack = asm_string_access_stack(data->stack, assign->var.identifier);
     char* right_op;
-    lines = generate_expression(lines, &assign->expr, stack, &right_op);
-
-    if (!right_op) {
+    if (!generate_expression(data, &assign->expr, &right_op)) {
         free(access_stack);
-        return NULL;
+        return false;
     }
 
     line = generate_asm_mov(access_stack, right_op);
@@ -33,16 +33,19 @@ char** generate_assignment_statement(char** lines, ast_statement_t* statement, a
     if (!line) {
         free(right_op);
         free(access_stack);
-        free_lines(lines);
+        string_array_free(data->gen_data->file);
         return NULL;
     }
 
     free(access_stack);
     free(right_op);
 
-    lines = append_line(lines, line);
-    CHECK_LINES_RETURN_NULL();
+    if (!append_line_to_file(data->gen_data, line)) {
+        free(line);
+        return false;
+    }
+
     free(line);
 
-    return lines;
+    return true;
 }

@@ -10,9 +10,11 @@
 #ifndef GENERATOR_EXPRESSION_H
 #define GENERATOR_EXPRESSION_H
 
+# include "generator/function.h"
+
 typedef struct ast_expr_s ast_expr_t;
 typedef struct ast_stack_s ast_stack_t;
 
-char** generate_expression(char** lines, ast_expr_t* expr, ast_stack_t* stack, char** expr_str);
+bool generate_expression(gen_func_data_t* data, ast_expr_t* expr, char** expr_str);
 
 #endif//!GENERATOR_EXPRESSION_H

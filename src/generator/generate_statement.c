@@ -7,46 +7,41 @@
 **
 \*******************************************************************/
 
-# include <stdlib.h>
-# include <stdio.h>
-# include <errno.h>
-
 # include "parser/ast_types.h"
 
-# include "generator/stack/stack.h"
-# include "generator/generator.h"
-# include "generator/asm/generate_asm.h"
 # include "generator/statement.h"
+# include "generator/generator.h"
+# include "generator/function.h"
 
+# include "utils/string_array.h"
 # include "utils/logging.h"
 
-
-char** generate_statement(char** lines, ast_statement_t* statement, ast_stack_t* stack)
+bool generate_statements(gen_func_data_t* data, ast_statement_t* statement_list)
 {
-    ast_statement_t* ptr = statement;
+    ast_statement_t* ptr = statement_list;
     while (ptr) {
         switch (ptr->type) {
             case RETURN:
-                lines = generate_return_statement(lines, ptr, stack);
+                if (!generate_return_statement(data, ptr))
+                    return false;
                 break;
             case ASSIGN_DECL:
-                lines = generate_assignment_statement(lines, ptr, stack);
+                if (!generate_assignment_statement(data, ptr))
+                    return false;
                 break;
             case ASSIGN:
-                lines = generate_assignment_statement(lines, ptr, stack);
+                if (!generate_assignment_statement(data, ptr))
+                    return false;
                 break;
             case DECL:
                 break;
             default:
-                free_lines(lines);
+                string_array_free(data->gen_data->file);
                 PERR("Unknow statement type. %d\n", ptr->type);
-                return NULL;
-        }
-        if (!lines) {
-            return NULL;
+                return false;
         }
         ptr = ptr->next;
     }
 
-    return lines;
+    return true;
 }

@@ -21,6 +21,7 @@ typedef enum {
     INTEGER_LITERAL,   // [0-9]+
     EQUAL,             // =
     PLUS,              // +
+    COMMA,             // ,
     UNKNOW,            // The type of the token is unknow to the compiler. This value MUST always be the last of the list.
 }token_type_t;
 

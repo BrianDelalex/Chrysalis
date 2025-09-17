@@ -44,7 +44,7 @@ SOURCE_FILES := $(wildcard $(addsuffix /*.c, $(SOURCE_DIRS)))
 OBJECT_FILES := $(patsubst $(SOURCE_DIR)/%, $(BUILD_DIR)/%, $(patsubst %.c, %.o, $(SOURCE_FILES)))
 
 ifeq ($(DEBUG),y)
-	DEBCFLAGS = -g3 -Og
+	DEBCFLAGS = -g3 -O0
 else
 	DEBCFLAGS = -O2
 endif

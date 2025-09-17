@@ -138,6 +138,8 @@ static token_type_t get_delimiter_type(char c)
         return EQUAL;
     case '+':
         return PLUS;
+    case ',':
+        return COMMA;
     default:
         return UNKNOW;
     }

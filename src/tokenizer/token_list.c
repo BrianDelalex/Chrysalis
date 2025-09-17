@@ -23,6 +23,7 @@ const char* token_type_str[] = {
     "INTEGER_LITERAL",
     "EQUAL",
     "PLUS",
+    "COMMA",
     "UNKNOW",
 };
 

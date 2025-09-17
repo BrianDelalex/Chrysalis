@@ -9,10 +9,56 @@
 
 # include "unity.h"
 
+# include <stdlib.h>
+
 # include "stage4.h"
 
-void test_stage4(void);
-void test_stage4(void)
+# include "tokenizer/tokenizer.h"
+
+# include "files/files.h"
+
+token_list_t *open_file_and_tokenize(const char* filepath);
+token_list_t *open_file_and_tokenize(const char* filepath)
 {
-    TEST_ASSERT_NULL(NULL);
+    char* file = read_file(filepath);
+    TEST_ASSERT_NOT_NULL(file);
+    token_list_t* tokens = tokenizer(file);
+    free(file);
+    return tokens;
+}
+
+void test_all_func_no_arg(void);
+void test_all_func_no_arg(void)
+{
+    token_list_t* tokens = open_file_and_tokenize(SOURCE_FILES("func_no_arg.c"));
+    TEST_ASSERT_NOT_NULL(tokens);
+    token_list_dump(tokens);
+    token_list_free(tokens);
+}
+
+void test_all_return_func_no_arg(void);
+void test_all_return_func_no_arg(void)
+{
+    token_list_t* tokens = open_file_and_tokenize(SOURCE_FILES("return_func_no_arg.c"));
+    TEST_ASSERT_NOT_NULL(tokens);
+    token_list_dump(tokens);
+    token_list_free(tokens);
+}
+
+void test_all_func_add(void);
+void test_all_func_add(void)
+{
+    token_list_t* tokens = open_file_and_tokenize(SOURCE_FILES("func_add.c"));
+    TEST_ASSERT_NOT_NULL(tokens);
+    token_list_dump(tokens);
+    token_list_free(tokens);
+}
+
+void test_all_return_func_add(void);
+void test_all_return_func_add(void)
+{
+    token_list_t* tokens = open_file_and_tokenize(SOURCE_FILES("return_func_add.c"));
+    TEST_ASSERT_NOT_NULL(tokens);
+    token_list_dump(tokens);
+    token_list_free(tokens);
 }

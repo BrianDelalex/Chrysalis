@@ -24,4 +24,6 @@
 
 # define ASSIGN_STATEMENT "    mov %s, %s\n"
 
+# define ASM_CALL "    call %s\n"
+
 #endif//!CONSTANT_H

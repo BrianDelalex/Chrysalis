@@ -47,7 +47,7 @@ static bool generate_return_statement_identifier(gen_func_data_t* data, ast_stat
 
 static bool generate_return_statement_int_literal(gen_func_data_t* data, ast_statement_return_t* statement)
 {
-    char* value;
+    char* value = NULL;
     char* line;
     if (!generate_expression(data, &statement->expr, &value)) {
         return false;
@@ -72,8 +72,7 @@ static bool generate_return_statement_int_literal(gen_func_data_t* data, ast_sta
 
 static bool generate_return_statement_operation(gen_func_data_t* data, ast_statement_return_t* statement)
 {
-    char* line;
-    char* value;
+    char* value = NULL;
     bool status = true;
     if (!generate_expression(data, &statement->expr, &value)) {
         return false;
@@ -83,7 +82,7 @@ static bool generate_return_statement_operation(gen_func_data_t* data, ast_state
     }
 
     if (strcmp(value, "eax") != 0) {
-        line = generate_asm_mov("eax", value);
+        char* line = generate_asm_mov("eax", value);
         if (!line) {
             free(value);
             string_array_free(data->gen_data->file);
@@ -92,7 +91,31 @@ static bool generate_return_statement_operation(gen_func_data_t* data, ast_state
         status = append_line_to_file(data->gen_data, line);
         free(line);
     }
+
     free(value);
+    return status;
+}
+
+static bool generate_return_statement_func_call(gen_func_data_t* data, ast_statement_return_t* statement)
+{
+    char* right_op = NULL;
+    bool status = true;
+    if (!generate_expression(data, &statement->expr, &right_op)) {
+        return false;
+    }
+
+    if (strcmp(right_op, "eax") != 0) {
+        char* line = generate_asm_mov("eax", right_op);
+        if (!line) {
+            free(right_op);
+            string_array_free(data->gen_data->file);
+            return NULL;
+        }
+        status = append_line_to_file(data->gen_data, line);
+        free(line);
+    }
+
+    free(right_op);
     return status;
 }
 
@@ -111,6 +134,10 @@ bool generate_return_statement(gen_func_data_t* data, ast_statement_t* statement
         break;
     case OP_OPERATION:
         if (!generate_return_statement_operation(data, rtn_statement))
+            return false;
+        break;
+    case OP_FUNC_CALL:
+        if (!generate_return_statement_func_call(data, rtn_statement))
             return false;
         break;
     default:

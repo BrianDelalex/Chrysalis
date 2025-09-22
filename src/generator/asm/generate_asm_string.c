@@ -53,11 +53,20 @@ char* generate_integer_literal(int value)
     return op;
 }
 
-char *generate_asm_add(const char* to, const char*value)
+char* generate_asm_add(const char* to, const char*value)
 {
     char *add;
 
     GENERATE_STRING(add, ASM_ADD, to, value);
 
     return add;
+}
+
+char* generate_asm_func_call(const char* funcname)
+{
+    char *call;
+
+    GENERATE_STRING(call, ASM_CALL, funcname);
+
+    return call;
 }

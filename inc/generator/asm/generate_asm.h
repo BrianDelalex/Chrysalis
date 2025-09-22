@@ -30,6 +30,7 @@ char* generate_global_label(const char* lbl_name);
 char* generate_label_beginning(const char* lbl_name);
 char* generate_asm_mov(const char* to, const char* from);
 char* generate_integer_literal(int value);
-char *generate_asm_add(const char* to, const char* value);
+char* generate_asm_add(const char* to, const char* value);
+char* generate_asm_func_call(const char* funcname);
 
 #endif//!GENERATE_ASM_H

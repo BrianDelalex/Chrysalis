@@ -17,6 +17,8 @@
 # include "generator/stack/stack.h"
 # include "generator/asm/generate_asm.h"
 
+# include "parser/variable_list.h"
+
 # include "utils/logging.h"
 
 extern bool g_main_found;
@@ -34,6 +36,33 @@ bool generate_start_function(gen_data_t* gen_data)
     if (!append_line_to_file(gen_data, start_func))
         return false;
 
+    return true;
+}
+
+static bool generate_parameters_into_stack(gen_data_t* gen_data, ast_function_t* func)
+{
+    char* args_dest[] = {"edi", "esi", "edx", "r10d", "r8d", "r9d"};
+    variable_list_t* params = func->parameters;
+    int args_count = 0;
+
+    while (params) {
+
+        char* access_stack = asm_string_access_stack(func->stack, params->var.identifier);
+        if (!access_stack)
+            return false;
+        char* mov = generate_asm_mov(access_stack, args_dest[args_count]);
+        free(access_stack);
+        if (!mov)
+            return false;
+        if (!append_line_to_file(gen_data, mov)) {
+            free(mov);
+            return false;
+        }
+        free(mov);
+
+        args_count++;
+        params = params->next;
+    }
     return true;
 }
 
@@ -69,6 +98,9 @@ bool generate_function(gen_data_t* gen_data, ast_function_t* func)
     }
     free(lbl);
     if (!generate_stack_setup(gen_data))
+        return false;
+
+    if (!generate_parameters_into_stack(gen_data, func))
         return false;
 
     func_data.gen_data = gen_data;

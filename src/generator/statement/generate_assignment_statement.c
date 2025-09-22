@@ -22,7 +22,7 @@ bool generate_assignment_statement(gen_func_data_t* data, ast_statement_t* state
     ast_statement_assign_t* assign = (ast_statement_assign_t*) statement->statement;
     char* line;
     char* access_stack = asm_string_access_stack(data->stack, assign->var.identifier);
-    char* right_op;
+    char* right_op = NULL;
     if (!generate_expression(data, &assign->expr, &right_op)) {
         free(access_stack);
         return false;

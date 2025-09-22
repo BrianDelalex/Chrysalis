@@ -28,11 +28,12 @@ static bool is_operation_sign(token_type_t type)
 static bool check_args_list(token_list_t** head)
 {
     token_list_t* ptr = *head;
+    const expr_pattern_t *expr_pattern;
+    const token_type_t delimiters[] = {COMMA, PARENTHESES_CLOSE, UNKNOW};
 
     while (ptr && ptr->token.type != PARENTHESES_CLOSE) {
-        if (ptr->token.type != IDENTIFIER && ptr->token.type != INTEGER_LITERAL)
+        if (!is_expression_valid(&ptr, &expr_pattern, delimiters))
             return false;
-        ptr = ptr->next;
         if (ptr && ptr->token.type == COMMA)
             ptr = ptr->next;
     }
@@ -40,20 +41,26 @@ static bool check_args_list(token_list_t** head)
     return true;
 }
 
-static bool is_operation_valid(token_list_t** head)
+static bool is_operation_valid(token_list_t** head, const token_type_t* delimiters)
 {
     token_list_t* ptr = *head;
 
     while (ptr && ptr->token.type != SEMICOLON) {
+        for (int i = 0; delimiters[i] != UNKNOW; i++) {
+            if (ptr->token.type == delimiters[i])
+                return false;
+        }
         if (!is_operand(ptr->token.type)) {
             PERR("Operand expected but got ");
             token_dump(*ptr);
             return false;
         }
         ptr = ptr->next;
-        if (ptr->token.type == SEMICOLON) {
-            *head = ptr;
-            return true;
+        for (int i = 0; delimiters[i] != UNKNOW; i++) {
+            if (ptr->token.type == delimiters[i]) {
+                *head = ptr;
+                return true;
+            }
         }
         if (!is_operation_sign(ptr->token.type)) {
             PERR("Operation sign expected but got ");
@@ -76,7 +83,7 @@ static bool check_expr_extended_token_type(token_list_t** head, token_type_ext_t
         }
         return false;
     case TOKEN_OPERATION:
-        return is_operation_valid(head);
+        return is_operation_valid(head, delimiters);
     case TOKEN_ARGS_LIST:
         return check_args_list(head);
     default:

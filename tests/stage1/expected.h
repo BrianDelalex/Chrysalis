@@ -12,6 +12,7 @@
 
 # include "tokenizer/token_list.h"
 # include "parser/ast_types.h"
+# include "parser/function/function_list.h"
 
 # include <stddef.h>
 
@@ -36,8 +37,13 @@ ast_function_t func_main_return_0_expected = {
     .name = "main"
 };
 
+function_list_t func_list_main_return_0_expected = {
+    .func = &func_main_return_0_expected,
+    .next = NULL
+};
+
 ast_program_t prg_main_return_0_expected = {
-    .functions = &func_main_return_0_expected,
+    .functions = &func_list_main_return_0_expected
 };
 /* End expected main_return_0 */
 
@@ -61,8 +67,13 @@ ast_function_t func_main_return_42_expected = {
     .name = "main"
 };
 
+function_list_t func_list_main_return_42_expected = {
+    .func = &func_main_return_42_expected,
+    .next = NULL
+};
+
 ast_program_t prg_main_return_42_expected = {
-    .functions = &func_main_return_42_expected,
+    .functions = &func_list_main_return_42_expected,
 };
 /* End expected main_return_42 */
 
@@ -79,8 +90,13 @@ ast_function_t func_no_main_expected = {
     .name = "func"
 };
 
+function_list_t func_list_no_main_expected = {
+    .func = &func_no_main_expected,
+    .next = NULL
+};
+
 ast_program_t prg_no_main_expected = {
-    .functions = &func_no_main_expected,
+    .functions = &func_list_no_main_expected,
 };
 /* End expected no_main */
 

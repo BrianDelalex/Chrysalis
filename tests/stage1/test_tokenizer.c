@@ -189,14 +189,14 @@ void check_ast_struct(const ast_program_t expected, ast_program_t *program);
 void check_ast_struct(const ast_program_t expected, ast_program_t *program)
 {
     TEST_ASSERT_NOT_NULL(program->functions);
-    TEST_ASSERT_EQUAL_STRING(expected.functions->name, program->functions->name);
-    TEST_ASSERT_NOT_NULL(program->functions->statements);
-    TEST_ASSERT_EQUAL(expected.functions->statements->type, program->functions->statements->type);
-    TEST_ASSERT_NOT_NULL(program->functions->statements->statement);
+    TEST_ASSERT_EQUAL_STRING(expected.functions->func->name, program->functions->func->name);
+    TEST_ASSERT_NOT_NULL(program->functions->func->statements);
+    TEST_ASSERT_EQUAL(expected.functions->func->statements->type, program->functions->func->statements->type);
+    TEST_ASSERT_NOT_NULL(program->functions->func->statements->statement);
 
     TEST_ASSERT_EQUAL(
-        ((ast_operand_integer_integral_t*)((ast_statement_return_t *)expected.functions->statements->statement)->expr.op.operand)->value,
-        ((ast_operand_integer_integral_t*)((ast_statement_return_t*)program->functions->statements->statement)->expr.op.operand)->value);
+        ((ast_operand_integer_integral_t*)((ast_statement_return_t *)expected.functions->func->statements->statement)->expr.op.operand)->value,
+        ((ast_operand_integer_integral_t*)((ast_statement_return_t*)program->functions->func->statements->statement)->expr.op.operand)->value);
 }
 
 void test_parser_main_return_0(void);

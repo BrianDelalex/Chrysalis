@@ -14,6 +14,7 @@
 # include "stage4.h"
 
 # include "tokenizer/tokenizer.h"
+# include "parser/parser.h"
 
 # include "files/files.h"
 
@@ -32,7 +33,8 @@ void test_all_func_no_arg(void)
 {
     token_list_t* tokens = open_file_and_tokenize(SOURCE_FILES("func_no_arg.c"));
     TEST_ASSERT_NOT_NULL(tokens);
-    token_list_dump(tokens);
+    ast_program_t* prg = create_ast_struct(tokens);
+    TEST_ASSERT_NOT_NULL(prg);
     token_list_free(tokens);
 }
 
@@ -41,7 +43,8 @@ void test_all_return_func_no_arg(void)
 {
     token_list_t* tokens = open_file_and_tokenize(SOURCE_FILES("return_func_no_arg.c"));
     TEST_ASSERT_NOT_NULL(tokens);
-    token_list_dump(tokens);
+    ast_program_t* prg = create_ast_struct(tokens);
+    TEST_ASSERT_NOT_NULL(prg);
     token_list_free(tokens);
 }
 
@@ -50,7 +53,8 @@ void test_all_func_add(void)
 {
     token_list_t* tokens = open_file_and_tokenize(SOURCE_FILES("func_add.c"));
     TEST_ASSERT_NOT_NULL(tokens);
-    token_list_dump(tokens);
+    ast_program_t* prg = create_ast_struct(tokens);
+    TEST_ASSERT_NOT_NULL(prg);
     token_list_free(tokens);
 }
 
@@ -59,6 +63,7 @@ void test_all_return_func_add(void)
 {
     token_list_t* tokens = open_file_and_tokenize(SOURCE_FILES("return_func_add.c"));
     TEST_ASSERT_NOT_NULL(tokens);
-    token_list_dump(tokens);
+    ast_program_t* prg = create_ast_struct(tokens);
+    TEST_ASSERT_NOT_NULL(prg);
     token_list_free(tokens);
 }

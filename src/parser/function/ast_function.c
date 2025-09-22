@@ -7,13 +7,15 @@
 **
 \*******************************************************************/
 
+# include <stdlib.h>
+# include <string.h>
+
 # include "parser/ast_types.h"
 # include "parser/stack.h"
+# include "parser/variable_list.h"
 
 # include "utils/logging.h"
 
-# include <stdlib.h>
-# include <string.h>
 
 ast_function_t* ast_function_init(void)
 {
@@ -24,6 +26,7 @@ ast_function_t* ast_function_init(void)
     }
 
     func->name = NULL;
+    func->parameters = NULL;
     func->statements = NULL;
     func->free = &ast_function_free;
 
@@ -39,6 +42,8 @@ ast_function_t* ast_function_init(void)
 
 void ast_function_free(ast_function_t* func)
 {
+    if (func->parameters)
+        variable_list_free(func->parameters);
     if (func->statements)
         ast_statement_list_free(func->statements);
     if (func->name)

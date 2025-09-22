@@ -22,19 +22,6 @@
 # include "utils/logging.h"
 # include "utils/string_manipulation.h"
 
-static type_t get_type(token_list_t** head)
-{
-    token_list_t* ptr = *head;
-    for (unsigned int i = 0; i < BUILTIN_TYPES_SIZE; i++) {
-        if (ptr->token.value && strcmp(ptr->token.value, BUILTIN_TYPE_IDENTIFIERS[i]) == 0) {
-            *head = ptr->next;
-            return BUILTIN_TYPES[i];
-        }
-        ptr = ptr->next;
-    }
-    return (type_t) {.type_id = -1, .size = 0};
-}
-
 static ast_statement_t* create_ast_statement_struct(ast_statement_type_t type)
 {
     ast_statement_t *statement = malloc(sizeof(ast_statement_t));

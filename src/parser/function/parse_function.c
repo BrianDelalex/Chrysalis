@@ -7,33 +7,66 @@
 **
 \*******************************************************************/
 
-# include "parser/ast_types.h"
-
-# include "parser/patterns.h"
-
-# include "parser/function/parser_function.h"
-
-# include "utils/logging.h"
-
 # include <stdlib.h>
 # include <string.h>
 
-ast_function_t* parse_function_ast(token_list_t* head)
+# include "parser/ast_types.h"
+# include "parser/patterns.h"
+# include "parser/variable_list.h"
+# include "parser/types/types.h"
+# include "parser/function/parser_function.h"
+
+# include "utils/logging.h"
+# include "utils/string_manipulation.h"
+
+ast_function_t* parse_function_ast(token_list_t** head)
 {
-    const pattern_t* pattern = find_function_pattern(head);
+    const pattern_t* pattern = find_function_pattern(*head);
 
     if (!pattern) {
         PERR("No function pattern match tokens starting at: ");
-        token_dump(*head);
+        token_dump(*(*head));
         return NULL;
     }
     return pattern->ast_create(head);
 }
 
-void* parse_function_decl_ast(token_list_t* head)
+static variable_list_t* parse_function_parameters(token_list_t** head)
+{
+    token_list_t* ptr = *head;
+    variable_list_t* var_list = NULL;
+
+    while (ptr && ptr->token.type != PARENTHESES_CLOSE) {
+        ast_variable_t var;
+        type_t type = get_type(&ptr);
+        if (type.type_id == -1) {
+            PERR("Unknow type %s\n", ptr->token.value);
+            variable_list_free(var_list);
+            return NULL;
+        }
+        var.type = type;
+        var.identifier = copy_string(ptr->token.value);
+        if (!var.identifier) {
+            variable_list_free(var_list);
+            return NULL;
+        }
+        ptr = ptr->next;
+        var_list = variable_list_create_node(var_list, var);
+        if (!var_list) {
+            return NULL;
+        }
+        if (ptr && ptr->token.type == COMMA) {
+            ptr = ptr->next;
+        }
+    }
+    *head = ptr;
+    return var_list;
+}
+
+void* parse_function_decl_ast(token_list_t** head)
 {
     ast_function_t *func;
-    token_list_t* ptr = head;
+    token_list_t* ptr = *head;
 
     if (ptr->token.type != KEYWORD) {
         PERR("Invalid token expected KEYWORD got %s with value %s\n",
@@ -69,6 +102,9 @@ void* parse_function_decl_ast(token_list_t* head)
         return NULL;
     }
     ptr = ptr->next;
+    if (ptr && ptr->token.type != PARENTHESES_CLOSE) {
+        func->parameters = parse_function_parameters(&ptr);
+    }
     if (!ptr || ptr->token.type != PARENTHESES_CLOSE) {
         PERR("Expected ')' after '%s('.\n", func->name);
         func->free(func);
@@ -100,5 +136,6 @@ void* parse_function_decl_ast(token_list_t* head)
         func->free(func);
         return NULL;
     }
+    *head = ptr->next;
     return func;
 }

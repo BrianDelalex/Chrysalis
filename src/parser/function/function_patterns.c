@@ -20,7 +20,16 @@ const pattern_t FUNC_DECL_NO_ARG = {
     .ast_create = &parse_function_decl_ast,
 };
 
+const int FUNC_DECL_TOKENS[] = {KEYWORD, IDENTIFIER, PARENTHESES_OPEN, TOKEN_PARAMS_LIST, PARENTHESES_CLOSE, CURLY_OPEN};
+const pattern_t FUNC_DECL = {
+    .tokens = FUNC_DECL_TOKENS,
+    .token_count = GET_TOKEN_COUNT(FUNC_DECL_TOKENS),
+    .type = FUNCTION_DECL,
+    .ast_create = &parse_function_decl_ast
+};
+
 const pattern_t FUNCTION_PATTERNS[] = {
     FUNC_DECL_NO_ARG,
+    FUNC_DECL
 };
 const unsigned int FUNCTION_PATTERNS_SIZE = sizeof(FUNCTION_PATTERNS) / sizeof(pattern_t);

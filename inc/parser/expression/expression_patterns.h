@@ -30,6 +30,6 @@ extern const expr_pattern_t EXPR_IDENTIFIER;
 extern const expr_pattern_t EXPRESSION_PATTERNS[];
 extern const unsigned int EXPRESSION_PATTERNS_SIZE;
 
-bool is_expression_valid(token_list_t **head, const expr_pattern_t** expr_patt);
+bool is_expression_valid(token_list_t **head, const expr_pattern_t** expr_patt, const token_type_t* delimiters);
 
 #endif//!EXPRESSION_PATTERNS_H

@@ -49,7 +49,7 @@ rpn_double_chained_list_t* token_list_to_rpn(token_list_t* head)
     rpn_list = rpn_double_list_push_back(rpn_list, operand);
     head = head->next;
 
-    while (head && head->token.type != SEMICOLON) {
+    while (head && (head->token.type != SEMICOLON && head->token.type != COMMA)) {
         operator = parse_operation_type(head);
         if (!operator) {
             rpn_double_list_free(rpn_list);

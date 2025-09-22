@@ -18,12 +18,15 @@ typedef enum {
     TOKEN_EXPR = EXTENDED_TOKEN_TYPES_START,
     TOKEN_RETURN,
     TOKEN_TYPE,
-    TOKEN_OPERATION
+    TOKEN_EXPR_DELIMITER,
+    TOKEN_OPERATION,
+    TOKEN_PARAMS_LIST,
+    TOKEN_ARGS_LIST
 }token_type_ext_t;
 
 # define GET_TOKEN_COUNT(tokens) sizeof(tokens) / sizeof(int)
 
-typedef void*(*ast_struct_create_fptr)(token_list_t*);
+typedef void*(*ast_struct_create_fptr)(token_list_t**);
 
 typedef enum {
     FUNCTION_DECL,

@@ -15,4 +15,5 @@
 ast_expr_t parse_integer_literal_expression(token_list_t* head);
 ast_expr_t parse_identifier_expression(token_list_t* head);
 ast_expr_t parse_operation_expression(token_list_t* head);
+ast_expr_t parse_function_call_expression(token_list_t* head);
 #endif//!PARSER_EXPRESSION_H

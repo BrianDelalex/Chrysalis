@@ -10,6 +10,10 @@
 # include <stdio.h>
 
 # include "parser/ast_types.h"
+# include "parser/operation/ast_operation.h"
+# include "parser/operation/rpn_double_chained_list.h"
+# include "parser/function/function_list.h"
+# include "parser/expression/function_call.h"
 
 # include "utils/logging.h"
 
@@ -19,6 +23,21 @@ static void dump_ast_expr(ast_expr_t expr)
             printf("<exp> ::= %s\n", ((ast_operand_identifier_t*)expr.op.operand)->identifier);
     } else if (expr.op.type == OP_INTEGER_LITERAL) {
         printf("<exp> ::= %d\n", ((ast_operand_integer_integral_t *)expr.op.operand)->value);
+    } else if (expr.op.type == OP_FUNC_CALL) {
+        printf("<exp> ::= %s()\n", ((ast_function_call_t*)expr.op.operand)->func_name);
+    } else if (expr.op.type == OP_OPERATION) {
+        printf("<exp> ::= ");
+        rpn_double_chained_list_t* rpn_list = ((ast_operation_t*)expr.op.operand)->rpn_list;
+        while (rpn_list) {
+            if (rpn_list->token == OPERAND_IDENTIFIER)
+                printf("%s ", rpn_list->data.identifier);
+            else if (rpn_list->token == OPERAND_INT)
+                printf("%ld ", rpn_list->data.value);
+            else
+                printf("%c ", (char) rpn_list->data.value);
+            rpn_list = rpn_list->next;
+        }
+        printf("\n");
     } else {
         PERR("Unknow operand type %d\n", expr.op.type);
     }
@@ -34,7 +53,7 @@ static void dump_ast_statement_assign(ast_statement_assign_t* ret)
 {
     printf("<statement> ::= \"assign\" <var> <exp> \";\"\n");
     printf("<var> ::= %s \"=\" <expr>\n", ret->var.identifier);
-    printf("<expr> ::= %d\n", ((ast_operand_integer_integral_t*)ret->expr.op.operand)->value);
+    dump_ast_expr(ret->expr);
 }
 
 static void dump_ast_decl(ast_statement_decl_t* decl)
@@ -86,7 +105,19 @@ static void dump_ast_statement_list(ast_statement_t* head)
 void dump_ast(ast_program_t* program);
 void dump_ast(ast_program_t* program)
 {
-    printf("<program> ::= <function>\n");
-    printf("<function> ::= \"int\" <%s> \"(\" \")\" \"{\" <statements> \"}\"\n", program->functions->name);
-    dump_ast_statement_list(program->functions->statements);
+    function_list_t* ptr = program->functions;
+    while (ptr) {
+        printf("<program> ::= <function>\n");
+        printf("<function> ::= \"int\" <%s> \"(\" \")\" \"{\" <statements> \"}\"\n", ptr->func->name);
+        dump_ast_statement_list(ptr->func->statements);
+        printf("<stack> ::= ");
+        ast_stack_entry_t* stack_entry = ptr->func->stack->entries;
+        while (stack_entry) {
+            printf("[%s, size:%ld, offset:%ld] ", stack_entry->identifier, stack_entry->size, stack_entry->offset);
+            stack_entry = stack_entry->next;
+        }
+        printf("\n");
+        printf("\n\n");
+        ptr = ptr->next;
+    }
 }

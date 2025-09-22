@@ -9,12 +9,14 @@
 
 
 # include "parser/ast_types.h"
+# include "parser/function/function_list.h"
 
 # include <stdlib.h>
 
 void ast_program_free(ast_program_t* prg)
 {
-    if (prg->functions)
-        prg->functions->free(prg->functions);
+    if (prg->functions) {
+        function_list_free(prg->functions);
+    }
     free(prg);
 }

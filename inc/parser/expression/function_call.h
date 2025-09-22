@@ -7,11 +7,14 @@
 **
 \*******************************************************************/
 
-#ifndef PARSER_FUNCTION_H
-#define PARSER_FUNCTION_H
+#ifndef FUNCTION_CALL_H
+#define FUNCTION_CALL_H
 
-# include "tokenizer/token_list.h"
+# include "parser/expression/expression_list.h"
 
-void* parse_function_decl_ast(token_list_t** head);
+typedef struct ast_function_call_s {
+    char* func_name;
+    expr_list_t* args;
+}ast_function_call_t;
 
-#endif//!PARSER_FUNCTION_H
+#endif//!FUNCTION_CALL_H

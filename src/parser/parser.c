@@ -10,6 +10,7 @@
 # include "parser/parser.h"
 # include "parser/ast_types.h"
 # include "parser/stack.h"
+# include "parser/function/function_list.h"
 
 # include "tokenizer/token_list.h"
 
@@ -22,20 +23,27 @@ void dump_ast(ast_program_t* program);
 
 ast_program_t* create_ast_struct(token_list_t* tokens)
 {
+    token_list_t* ptr = tokens;
     ast_program_t *program = malloc(sizeof(ast_program_t));
     if (!program)
         return NULL;
     memset(program, 0, sizeof(ast_program_t));
 
-    ast_function_t *func = parse_function_ast(tokens);
-    if (!func) {
-        ast_program_free(program);
-        return NULL;
+    while (ptr) {
+        ast_function_t *func = parse_function_ast(&ptr);
+        if (!func) {
+            ast_program_free(program);
+            return NULL;
+        }
+        program->functions = function_list_create_node(program->functions, func);
+        if (!program->functions) {
+            return NULL;
+        }
     }
-    program->functions = func;
 
     if (populate_stack_struct(program) != 0) {
         ast_program_free(program);
+        return NULL;
     }
 
     dump_ast(program);

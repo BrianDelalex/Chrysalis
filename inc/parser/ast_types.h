@@ -19,7 +19,8 @@
 typedef enum {
     OP_IDENTIFIER,
     OP_INTEGER_LITERAL,
-    OP_OPERATION
+    OP_OPERATION,
+    OP_FUNC_CALL
 }OPERAND_TYPE_T;
 
 typedef struct ast_operand_integer_integral_s {
@@ -85,15 +86,18 @@ typedef struct ast_stack_s {
     ast_stack_entry_t* entries;
 }ast_stack_t;
 
+typedef struct variable_list_s variable_list_t;
 typedef struct ast_function_s {
     char* name;
     void (*free)(struct ast_function_s*);
+    variable_list_t* parameters;
     ast_statement_t* statements;
     ast_stack_t* stack;
 }ast_function_t;
 
+typedef struct function_list_s function_list_t;
 typedef struct ast_program_s {
-    struct ast_function_s* functions;
+    function_list_t* functions;
 }ast_program_t;
 
 
@@ -109,7 +113,7 @@ void ast_function_free(ast_function_t* func);
 void ast_program_free(ast_program_t* prg);
 
 /* ast struct creation function */
-ast_function_t* parse_function_ast(token_list_t* head);
+ast_function_t* parse_function_ast(token_list_t** head);
 ast_statement_t* parse_statement_ast(token_list_t** head);
 
 /* ast struct initialization macro */

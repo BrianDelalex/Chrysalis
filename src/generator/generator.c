@@ -10,6 +10,8 @@
 # include <stdlib.h>
 # include <stdbool.h>
 
+# include "parser/function/function_list.h"
+
 # include "generator/generator.h"
 # include "generator/function.h"
 
@@ -41,8 +43,12 @@ int generator(ast_program_t* program, const char* target)
     gen_data.file[0] = NULL;
     g_main_found = false;
 
-    if (!generate_function(&gen_data, program->functions))
-        return -1;
+    function_list_t* functions = program->functions;
+    while (functions) {
+        if (!generate_function(&gen_data, functions->func))
+            return -1;
+        functions = functions->next;
+    }
 
     if (g_main_found) {
         if (!generate_start_function(&gen_data))

@@ -7,6 +7,10 @@
 **
 \*******************************************************************/
 
+# include <stdbool.h>
+# include <stddef.h>
+# include <string.h>
+
 # include "parser/statement/statement_patterns.h"
 # include "parser/expression/expression_patterns.h"
 
@@ -14,33 +18,17 @@
 
 # include "utils/logging.h"
 
-# include <stdbool.h>
-# include <stddef.h>
-# include <stdio.h>
-# include <string.h>
-
 static bool is_token_return(token_list_t token)
 {
     return token.token.type == KEYWORD && strcmp(token.token.value, "return") == 0;
-}
-
-static bool is_valid_type(token_list_t** head)
-{
-    token_list_t* ptr = *head;
-    for (unsigned int i = 0; i < BUILTIN_TYPE_IDENTIFIERS_SIZE; i++) {
-        if (ptr->token.type == KEYWORD && strcmp(ptr->token.value, BUILTIN_TYPE_IDENTIFIERS[i]) == 0) {
-            *head = ptr->next;
-            return true;
-        }
-    }
-    return false;
 }
 
 static bool check_extended_token_type(token_list_t **ptr, token_type_ext_t type, const expr_pattern_t** expr_patt)
 {
     switch (type) {
         case TOKEN_EXPR:
-            return is_expression_valid(ptr, expr_patt);
+            const token_type_t delimiters[] = {SEMICOLON, UNKNOW};
+            return is_expression_valid(ptr, expr_patt, delimiters);
         case TOKEN_RETURN:
             bool ret = is_token_return(*(*ptr));
             if (ret)

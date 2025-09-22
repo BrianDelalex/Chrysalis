@@ -8,10 +8,20 @@
 \*******************************************************************/
 
 # include "parser/stack.h"
+# include "parser/function/function_list.h"
+# include "parser/variable_list.h"
 
-static int popuplate_function_stack_struct(ast_function_t* func)
+static int populate_function_stack_struct(ast_function_t* func)
 {
+    variable_list_t* parameters = func->parameters;
     ast_statement_t* statements = func->statements;
+
+
+    while (parameters) {
+        if (ast_stack_add_entry(func->stack, parameters->var.type.size, parameters->var.identifier) != 0)
+            return -1;
+        parameters = parameters->next;
+    }
 
     while (statements) {
         if (statements->type == ASSIGN_DECL) {
@@ -32,9 +42,11 @@ static int popuplate_function_stack_struct(ast_function_t* func)
 
 int populate_stack_struct(ast_program_t* prg)
 {
-    if (prg->functions) {
-        if (popuplate_function_stack_struct(prg->functions) != 0)
+    function_list_t* ptr = prg->functions;
+    while (ptr) {
+        if (populate_function_stack_struct(ptr->func) != 0)
             return -1;
+        ptr = ptr->next;
     }
     return 0;
 }

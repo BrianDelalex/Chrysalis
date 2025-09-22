@@ -25,6 +25,21 @@ static bool is_operation_sign(token_type_t type)
     return type == PLUS;
 }
 
+static bool check_args_list(token_list_t** head)
+{
+    token_list_t* ptr = *head;
+
+    while (ptr && ptr->token.type != PARENTHESES_CLOSE) {
+        if (ptr->token.type != IDENTIFIER && ptr->token.type != INTEGER_LITERAL)
+            return false;
+        ptr = ptr->next;
+        if (ptr && ptr->token.type == COMMA)
+            ptr = ptr->next;
+    }
+    *head = ptr;
+    return true;
+}
+
 static bool is_operation_valid(token_list_t** head)
 {
     token_list_t* ptr = *head;
@@ -50,18 +65,27 @@ static bool is_operation_valid(token_list_t** head)
     return false;
 }
 
-static bool check_expr_extended_token_type(token_list_t** head, token_type_ext_t ext_type)
+static bool check_expr_extended_token_type(token_list_t** head, token_type_ext_t ext_type, const token_type_t* delimiters)
 {
     switch (ext_type) {
+    case TOKEN_EXPR_DELIMITER:
+        for (int i = 0; delimiters[i] != UNKNOW; i++) {
+            if ((*head)->token.type == delimiters[i]) {
+                return true;
+            }
+        }
+        return false;
     case TOKEN_OPERATION:
         return is_operation_valid(head);
+    case TOKEN_ARGS_LIST:
+        return check_args_list(head);
     default:
         PERR("Unknow expression extended token type %d\n", ext_type);
         return false;
     }
 }
 
-static bool does_expression_pattern_macth(token_list_t** head, const expr_pattern_t* pattern)
+static bool does_expression_pattern_macth(token_list_t** head, const expr_pattern_t* pattern, const token_type_t* delimiters)
 {
     token_list_t* ptr = *head;
     token_list_t* save_ptr = *head;
@@ -70,9 +94,10 @@ static bool does_expression_pattern_macth(token_list_t** head, const expr_patter
         if (!ptr)
             return false;
         if (pattern->tokens[i] >= EXTENDED_TOKEN_TYPES_START) {
-            if (!check_expr_extended_token_type(&ptr, pattern->tokens[i])) {
+            if (!check_expr_extended_token_type(&ptr, pattern->tokens[i], delimiters)) {
                 return false;
             } else {
+                save_ptr = ptr;
                 continue;
             }
         }
@@ -86,10 +111,10 @@ static bool does_expression_pattern_macth(token_list_t** head, const expr_patter
     return true;
 }
 
-bool is_expression_valid(token_list_t **head, const expr_pattern_t** patt)
+bool is_expression_valid(token_list_t **head, const expr_pattern_t** patt, const token_type_t* delimiters)
 {
     for (unsigned int i = 0; i < EXPRESSION_PATTERNS_SIZE; i++) {
-        if (does_expression_pattern_macth(head, &EXPRESSION_PATTERNS[i])) {
+        if (does_expression_pattern_macth(head, &EXPRESSION_PATTERNS[i], delimiters)) {
             *patt = &EXPRESSION_PATTERNS[i];
             return true;
         }

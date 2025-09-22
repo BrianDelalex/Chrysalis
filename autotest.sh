@@ -5,6 +5,7 @@ TEST_COMPILE_NO_MAIN_SCRIPT=tests/test_compile_no_main.sh
 TEST_STAGE1_DIR=tests/stage1
 TEST_STAGE2_DIR=tests/stage2
 TEST_STAGE3_DIR=tests/stage3
+TEST_STAGE4_DIR=tests/stage4
 
 if [ -n "$MEMCHECK" ]; then
     VALGRIND="valgrind --leak-check=full --error-exitcode=1"
@@ -15,6 +16,7 @@ fi
 mkdir -p "${TEST_STAGE1_DIR}/output_files"
 mkdir -p "${TEST_STAGE2_DIR}/output_files"
 mkdir -p "${TEST_STAGE3_DIR}/output_files"
+mkdir -p "${TEST_STAGE4_DIR}/output_files"
 
 make clean
 make test
@@ -35,6 +37,12 @@ if [ $? -ne 0 ]; then
 fi
 
 CMD="${VALGRIND} ./tests/test_stage3"
+eval $CMD
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+CMD="${VALGRIND} ./tests/test_stage4"
 eval $CMD
 if [ $? -ne 0 ]; then
     exit 1
@@ -66,5 +74,14 @@ echo "---- Compilation test stage3 ----"
 ./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_return_add_identifier 6
 ./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_return_add_two_identifier 6
 ./$TEST_COMPILE_SCRIPT $TEST_STAGE3_DIR gen_return_final_add 34
+
+echo "---- Compilation test stage4 ----"
+./$TEST_COMPILE_SCRIPT $TEST_STAGE4_DIR gen_func_no_arg 0
+./$TEST_COMPILE_SCRIPT $TEST_STAGE4_DIR gen_return_func_no_arg 0
+./$TEST_COMPILE_SCRIPT $TEST_STAGE4_DIR gen_func_add 6
+./$TEST_COMPILE_SCRIPT $TEST_STAGE4_DIR gen_return_func_add 6
+./$TEST_COMPILE_SCRIPT $TEST_STAGE4_DIR gen_func_add_identifier 6
+./$TEST_COMPILE_SCRIPT $TEST_STAGE4_DIR gen_func_add_operation 12
+./$TEST_COMPILE_SCRIPT $TEST_STAGE4_DIR gen_func_add_operation_identifier 12
 
 exit 0
